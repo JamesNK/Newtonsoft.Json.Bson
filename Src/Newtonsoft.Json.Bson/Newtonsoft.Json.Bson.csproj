@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
+    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSuffix>beta1</VersionSuffix>
+    <Authors>James Newton-King</Authors>
+    <Company>Newtonsoft</Company>
+    <AssemblyTitle>Json.NET BSON</AssemblyTitle>
+    <Description>Json.NET BSON adds support for reading and writing BSON to Json.NET</Description>
+    <Copyright>Copyright © James Newton-King 2017</Copyright>
+    <Summary>Json.NET BSON adds support for reading and writing BSON to Json.NET</Summary>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageId>Newtonsoft.Json.Bson</PackageId>
+    <PackageTags>bson</PackageTags>
+    <PackageIconUrl>http://www.newtonsoft.com/content/images/nugeticon.png</PackageIconUrl>
+    <PackageProjectUrl>http://www.newtonsoft.com/json</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.github.com/JamesNK/Newtonsoft.Json.Bson/master/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/JamesNK/Newtonsoft.Json.Bson</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <AssemblyName>Newtonsoft.Json.Bson</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-*" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <DefineConstants>HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_CHAR_TO_STRING_WITH_CULTURE;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
+    <DefineConstants>NETSTANDARD1_1;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+</Project>
