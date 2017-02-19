@@ -113,7 +113,7 @@ task Package -depends Build {
     New-Item -Path $workingDir\NuGet -ItemType Directory
 
     exec { dotnet pack $workingSourceDir\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj --no-build --configuration Release --output $workingDir\NuGet }
-    #exec { dotnet pack $workingSourceDir\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj --no-build --configuration Release --output $workingDir\NuGet --include-symbols --include-source }
+    exec { dotnet pack $workingSourceDir\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj --no-build --configuration Release --output $workingDir\NuGet --include-symbols }
   }
   
   Copy-Item -Path $baseDir\LICENSE.md -Destination $workingDir\Package\
