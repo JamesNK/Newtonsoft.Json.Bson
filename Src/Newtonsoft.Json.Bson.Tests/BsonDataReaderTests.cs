@@ -57,6 +57,9 @@ namespace Newtonsoft.Json.Bson.Tests
         [Test]
         public void DeserializeLargeBsonObject()
         {
+#if !DNXCORE50
+            Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
+#endif
             byte[] data = System.IO.File.ReadAllBytes(@"SpaceShipV2.bson");
 
             MemoryStream ms = new MemoryStream(data);
