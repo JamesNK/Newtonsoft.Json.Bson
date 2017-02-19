@@ -29,7 +29,7 @@ using System.Globalization;
 using Newtonsoft.Json.Utilities;
 using Newtonsoft.Json.Bson.Utilities;
 
-namespace Newtonsoft.Json.Converters
+namespace Newtonsoft.Json.Bson.Converters
 {
     /// <summary>
     /// Converts a <see cref="BsonDataObjectId"/> to and from JSON and BSON.
