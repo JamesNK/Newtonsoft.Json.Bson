@@ -14,7 +14,7 @@
     <None Include="SpaceShipV2.bson">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-*" />
+    <!--<PackageReference Include="Newtonsoft.Json" Version="10.0.1-*" />-->
     <ProjectReference Include="..\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net45'">

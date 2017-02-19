@@ -96,7 +96,7 @@ namespace Newtonsoft.Json.Bson.Tests.Converters
             serializer.Serialize(writer, new RegexTestClass { Regex = regex });
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             serializer.Converters.Add(new BsonDataRegexConverter());
 
             RegexTestClass c = serializer.Deserialize<RegexTestClass>(reader);
@@ -125,7 +125,7 @@ namespace Newtonsoft.Json.Bson.Tests.Converters
             Assert.AreEqual(expected, bson);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             serializer.Converters.Add(new BsonDataRegexConverter());
 
             RegexTestClass c = serializer.Deserialize<RegexTestClass>(reader);

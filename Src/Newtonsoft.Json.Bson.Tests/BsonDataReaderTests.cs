@@ -77,7 +77,7 @@ namespace Newtonsoft.Json.Bson.Tests
         public void Bson_SupportMultipleContent()
         {
             MemoryStream myStream = new MemoryStream();
-            BsonWriter writer = new BsonWriter(myStream);
+            BsonDataWriter writer = new BsonDataWriter(myStream);
             JsonSerializer serializer = new JsonSerializer();
             MyTest tst1 = new MyTest
             {
@@ -639,7 +639,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual(3, o.Count);
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
             o.WriteTo(writer);
             writer.Flush();
 
@@ -968,7 +968,7 @@ namespace Newtonsoft.Json.Bson.Tests
         public void WriteAndReadEmptyListsAndDictionaries()
         {
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
 
             writer.WriteStartObject();
             writer.WritePropertyName("Arguments");
@@ -1021,7 +1021,7 @@ namespace Newtonsoft.Json.Bson.Tests
             DateTime value = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
 
             writer.WriteStartObject();
             writer.WritePropertyName("DateTime");
@@ -1052,7 +1052,7 @@ namespace Newtonsoft.Json.Bson.Tests
             DateTime value = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
             writer.DateTimeKindHandling = DateTimeKind.Unspecified;
 
             writer.WriteStartObject();
@@ -1076,7 +1076,7 @@ namespace Newtonsoft.Json.Bson.Tests
             DateTime value = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Local);
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
 
             writer.WriteStartObject();
             writer.WritePropertyName("DateTime");
@@ -1096,7 +1096,7 @@ namespace Newtonsoft.Json.Bson.Tests
         private string WriteAndReadStringValue(string val)
         {
             MemoryStream ms = new MemoryStream();
-            BsonWriter bs = new BsonWriter(ms);
+            BsonDataWriter bs = new BsonDataWriter(ms);
             bs.WriteStartObject();
             bs.WritePropertyName("StringValue");
             bs.WriteValue(val);
@@ -1117,7 +1117,7 @@ namespace Newtonsoft.Json.Bson.Tests
         private string WriteAndReadStringPropertyName(string val)
         {
             MemoryStream ms = new MemoryStream();
-            BsonWriter bs = new BsonWriter(ms);
+            BsonDataWriter bs = new BsonDataWriter(ms);
             bs.WriteStartObject();
             bs.WritePropertyName(val);
             bs.WriteValue("Dummy");
@@ -1337,7 +1337,7 @@ namespace Newtonsoft.Json.Bson.Tests
 }";
             JObject parsed = JObject.Parse(doc);
             var memoryStream = new MemoryStream();
-            var bsonWriter = new BsonWriter(memoryStream);
+            var bsonWriter = new BsonDataWriter(memoryStream);
             parsed.WriteTo(bsonWriter);
             bsonWriter.Flush();
             memoryStream.Position = 0;
@@ -1382,7 +1382,7 @@ namespace Newtonsoft.Json.Bson.Tests
 }";
             JObject parsed = JObject.Parse(json);
             var memoryStream = new MemoryStream();
-            var bsonWriter = new BsonWriter(memoryStream);
+            var bsonWriter = new BsonDataWriter(memoryStream);
             parsed.WriteTo(bsonWriter);
             bsonWriter.Flush();
             memoryStream.Position = 0;
@@ -1409,7 +1409,7 @@ namespace Newtonsoft.Json.Bson.Tests
             UriGuidTimeSpanTestClass c1 = new UriGuidTimeSpanTestClass();
 
             var memoryStream = new MemoryStream();
-            var bsonWriter = new BsonWriter(memoryStream);
+            var bsonWriter = new BsonDataWriter(memoryStream);
             JsonSerializer serializer = new JsonSerializer();
             serializer.Serialize(bsonWriter, c1);
             bsonWriter.Flush();
@@ -1437,7 +1437,7 @@ namespace Newtonsoft.Json.Bson.Tests
             };
 
             var memoryStream = new MemoryStream();
-            var bsonWriter = new BsonWriter(memoryStream);
+            var bsonWriter = new BsonDataWriter(memoryStream);
             JsonSerializer serializer = new JsonSerializer();
             serializer.Serialize(bsonWriter, c1);
             bsonWriter.Flush();
@@ -1463,7 +1463,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             byte[] objectBytes;
             using (MemoryStream bsonStream = new MemoryStream())
-            using (JsonWriter bsonWriter = new BsonWriter(bsonStream))
+            using (JsonWriter bsonWriter = new BsonDataWriter(bsonStream))
             {
                 serializer.Serialize(bsonWriter, test);
                 bsonWriter.Flush();
@@ -1489,7 +1489,7 @@ namespace Newtonsoft.Json.Bson.Tests
             j["test"] = badText;
 
             var memoryStream = new MemoryStream();
-            var bsonWriter = new BsonWriter(memoryStream);
+            var bsonWriter = new BsonDataWriter(memoryStream);
             j.WriteTo(bsonWriter);
             bsonWriter.Flush();
 
@@ -1638,7 +1638,7 @@ namespace Newtonsoft.Json.Bson.Tests
             JsonSerializer serializer = JsonSerializer.Create(settings);
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter bsonWriter = new BsonWriter(ms);
+            BsonDataWriter bsonWriter = new BsonDataWriter(ms);
             serializer.Serialize(bsonWriter, zoo);
 
             ms.Seek(0, SeekOrigin.Begin);
@@ -1661,7 +1661,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Guid g = new Guid("822C0CE6-CC42-4753-A3C3-26F0684A4B88");
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
             writer.WriteStartObject();
             writer.WritePropertyName("TheGuid");
             writer.WriteValue(g);
@@ -1695,7 +1695,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Guid g = new Guid("822C0CE6-CC42-4753-A3C3-26F0684A4B88");
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
             writer.WriteStartObject();
             writer.WritePropertyName("TheGuid");
             writer.WriteValue(g);
@@ -1727,7 +1727,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Guid g = new Guid("822C0CE6-CC42-4753-A3C3-26F0684A4B88");
 
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonDataWriter writer = new BsonDataWriter(ms);
             writer.WriteStartObject();
             writer.WritePropertyName("TheGuid");
             writer.WriteValue(g);

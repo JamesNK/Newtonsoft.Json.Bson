@@ -80,7 +80,7 @@ namespace Newtonsoft.Json.Bson.Tests.Converters
             JsonSerializer serializer = new JsonSerializer();
             serializer.Converters.Add(new BsonDataObjectIdConverter());
 
-            BsonReader reader = new BsonReader(new MemoryStream(bson));
+            BsonDataReader reader = new BsonDataReader(new MemoryStream(bson));
             ObjectIdTestClass c = serializer.Deserialize<ObjectIdTestClass>(reader);
 
             CollectionAssert.AreEquivalent(c.Id.Value, HexToBytes("4ABBED9D1D8B0F0218000001"));

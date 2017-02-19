@@ -192,7 +192,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             Assert.AreEqual(expected, bson);
 
-            BsonReader reader = new BsonReader(new MemoryStream(ms.ToArray()));
+            BsonDataReader reader = new BsonDataReader(new MemoryStream(ms.ToArray()));
             reader.ReadRootValueAsArray = true;
             reader.Read();
             reader.Read();
@@ -263,7 +263,7 @@ namespace Newtonsoft.Json.Bson.Tests
             serializer.Serialize(writer, s1);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             Store s2 = (Store)serializer.Deserialize(reader, typeof(Store));
 
             Assert.AreNotEqual(s1, s2);
@@ -365,7 +365,7 @@ namespace Newtonsoft.Json.Bson.Tests
             serializer.Serialize(writer, jsonGoogleMapGeocoder);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             GoogleMapGeocoderStructure bsonGoogleMapGeocoder = (GoogleMapGeocoderStructure)serializer.Deserialize(reader, typeof(GoogleMapGeocoderStructure));
 
             Assert.IsNotNull(bsonGoogleMapGeocoder);
@@ -486,7 +486,7 @@ namespace Newtonsoft.Json.Bson.Tests
             ms.Seek(0, SeekOrigin.Begin);
 
             // deserialize product from BSON
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             Product deserializedProduct = serializer.Deserialize<Product>(reader);
 
             Console.WriteLine(deserializedProduct.Name);
@@ -514,7 +514,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("17-00-00-00-07-5F-6F-69-64-00-01-02-03-04-05-06-07-08-09-0A-0B-0C-00", bson);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
@@ -583,7 +583,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             Product deserializedProduct = serializer.Deserialize<Product>(reader);
 
             Console.WriteLine(deserializedProduct.Name);
@@ -610,7 +610,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             reader.ReadRootValueAsArray = true;
 
             Assert.IsTrue(reader.Read());
@@ -649,7 +649,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             reader.ReadRootValueAsArray = true;
             reader.DateTimeKindHandling = DateTimeKind.Utc;
 
@@ -732,7 +732,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             Assert.AreEqual("15-00-00-00-0B-52-65-67-65-78-00-28-68-69-29-00-69-75-78-00-00", hex);
 
-            JObject o = (JObject)JObject.ReadFrom(new BsonReader(new MemoryStream(ms.ToArray())));
+            JObject o = (JObject)JObject.ReadFrom(new BsonDataReader(new MemoryStream(ms.ToArray())));
 
             StringAssert.AreEqual(@"{
   ""Regex"": ""/(hi)/iux""
@@ -776,7 +776,7 @@ namespace Newtonsoft.Json.Bson.Tests
             serializer.Serialize(writer, c);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             GuidTestClass c2 = serializer.Deserialize<GuidTestClass>(reader);
 
@@ -797,7 +797,7 @@ namespace Newtonsoft.Json.Bson.Tests
             serializer.Serialize(writer, c);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             GuidTestClass c2 = serializer.Deserialize<GuidTestClass>(reader);
 
@@ -822,7 +822,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("2A-00-00-00-05-42-6C-61-68-00-1A-00-00-00-00-F6-FF-FF-FF-FF-FF-FF-1F-B2-21-CB-28-59-84-C4-AE-03-8A-44-34-2F-4C-4E-9E-3E-01-00", bson);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
@@ -854,7 +854,7 @@ namespace Newtonsoft.Json.Bson.Tests
             writer.WriteEndObject();
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
             Assert.IsTrue(reader.Read());
@@ -879,7 +879,7 @@ namespace Newtonsoft.Json.Bson.Tests
             writer.WriteEndObject();
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
             Assert.IsTrue(reader.Read());

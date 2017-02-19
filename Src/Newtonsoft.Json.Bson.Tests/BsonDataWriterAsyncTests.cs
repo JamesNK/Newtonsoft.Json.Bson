@@ -180,7 +180,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             Assert.AreEqual(expected, bson);
 
-            BsonReader reader = new BsonReader(new MemoryStream(ms.ToArray()));
+            BsonDataReader reader = new BsonDataReader(new MemoryStream(ms.ToArray()));
             reader.ReadRootValueAsArray = true;
             await reader.ReadAsync();
             await reader.ReadAsync();
@@ -338,7 +338,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("17-00-00-00-07-5F-6F-69-64-00-01-02-03-04-05-06-07-08-09-0A-0B-0C-00", bson);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             Assert.IsTrue(await reader.ReadAsync());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
@@ -404,7 +404,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             reader.ReadRootValueAsArray = true;
 
             Assert.IsTrue(await reader.ReadAsync());
@@ -443,7 +443,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
             reader.ReadRootValueAsArray = true;
             reader.DateTimeKindHandling = DateTimeKind.Utc;
 
@@ -517,7 +517,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("2A-00-00-00-05-42-6C-61-68-00-1A-00-00-00-00-F6-FF-FF-FF-FF-FF-FF-1F-B2-21-CB-28-59-84-C4-AE-03-8A-44-34-2F-4C-4E-9E-3E-01-00", bson);
 
             ms.Seek(0, SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms);
+            BsonDataReader reader = new BsonDataReader(ms);
 
             Assert.IsTrue(await reader.ReadAsync());
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
