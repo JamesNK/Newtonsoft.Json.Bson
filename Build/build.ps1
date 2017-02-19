@@ -21,7 +21,6 @@
   $releaseDir = "$baseDir\Release"
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
-  $nugetPath = "$buildDir\nuget.exe"
   $builds = @(
     @{Name = "Newtonsoft.Json.Bson"; TestsName = "Newtonsoft.Json.Bson.Tests"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; NuGetDir = "net45,netstandard1.0,netstandard1.1"; Framework=$null; Enabled=$true},
     @{Name = "Newtonsoft.Json.Bson.Net45"; TestsName = "Newtonsoft.Json.Bson.Tests.Net45"; BuildFunction = $null; TestsFunction = "NUnitTests"; NuGetDir = "net45"; Framework="net-4.0"; Enabled=$true}
@@ -50,7 +49,6 @@ task Clean {
 
 # Build each solution, optionally signed
 task Build -depends Clean {
-  EnsureNuGetExists
 
   Write-Host "Copying source to working source directory $workingSourceDir"
   robocopy $sourceDir $workingSourceDir /MIR /NP /XD bin obj TestResults AppPackages $packageDirs .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
@@ -139,15 +137,6 @@ task Test -depends Deploy {
     {
       & $build.TestsFunction $build
     }
-  }
-}
-
-function EnsureNuGetExists()
-{
-  if (!(Test-Path $nugetPath))
-  {
-    Write-Host "Couldn't find nuget.exe. Downloading from $nugetUrl to $nugetPath"
-    (New-Object System.Net.WebClient).DownloadFile($nugetUrl, $nugetPath)
   }
 }
 
