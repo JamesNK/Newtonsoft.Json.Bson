@@ -94,30 +94,7 @@ namespace Newtonsoft.Json.Bson
                     return AsyncUtils.CompletedTask;
                 case BsonType.Date:
                     BsonValue value = (BsonValue)t;
-
-                    long ticks;
-
-                    if (value.Value is DateTime)
-                    {
-                        DateTime dateTime = (DateTime)value.Value;
-                        if (DateTimeKindHandling == DateTimeKind.Utc)
-                        {
-                            dateTime = dateTime.ToUniversalTime();
-                        }
-                        else if (DateTimeKindHandling == DateTimeKind.Local)
-                        {
-                            dateTime = dateTime.ToLocalTime();
-                        }
-
-                        ticks = DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTime, false);
-                    }
-                    else
-                    {
-                        DateTimeOffset dateTimeOffset = (DateTimeOffset)value.Value;
-                        ticks = DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTimeOffset.UtcDateTime, dateTimeOffset.Offset);
-                    }
-
-                    return _asyncWriter.WriteAsync(ticks, cancellationToken);
+                    return _asyncWriter.WriteAsync(TicksFromDateObject(value.Value), cancellationToken);
                 case BsonType.Binary:
                     return WriteBinaryAsync((BsonBinary)t, cancellationToken);
                 case BsonType.Oid:

@@ -135,32 +135,7 @@ namespace Newtonsoft.Json.Bson
                 case BsonType.Date:
                 {
                     BsonValue value = (BsonValue)t;
-
-                    long ticks = 0;
-
-                    if (value.Value is DateTime)
-                    {
-                        DateTime dateTime = (DateTime)value.Value;
-                        if (DateTimeKindHandling == DateTimeKind.Utc)
-                        {
-                            dateTime = dateTime.ToUniversalTime();
-                        }
-                        else if (DateTimeKindHandling == DateTimeKind.Local)
-                        {
-                            dateTime = dateTime.ToLocalTime();
-                        }
-
-                        ticks = DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTime, false);
-                    }
-#if HAVE_DATE_TIME_OFFSET
-                    else
-                    {
-                        DateTimeOffset dateTimeOffset = (DateTimeOffset)value.Value;
-                        ticks = DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTimeOffset.UtcDateTime, dateTimeOffset.Offset);
-                    }
-#endif
-
-                    _writer.Write(ticks);
+                    _writer.Write(TicksFromDateObject(value.Value));
                 }
                     break;
                 case BsonType.Binary:
@@ -192,6 +167,28 @@ namespace Newtonsoft.Json.Bson
                 default:
                     throw new ArgumentOutOfRangeException(nameof(t), "Unexpected token when writing BSON: {0}".FormatWith(CultureInfo.InvariantCulture, t.Type));
             }
+        }
+
+        private long TicksFromDateObject(object value)
+        {
+#if HAVE_DATE_TIME_OFFSET
+            if (value is DateTimeOffset)
+            {
+                DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
+                return DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTimeOffset.UtcDateTime, dateTimeOffset.Offset);
+            }
+#endif
+            DateTime dateTime = (DateTime)value;
+            if (DateTimeKindHandling == DateTimeKind.Utc)
+            {
+                dateTime = dateTime.ToUniversalTime();
+            }
+            else if (DateTimeKindHandling == DateTimeKind.Local)
+            {
+                dateTime = dateTime.ToLocalTime();
+            }
+
+            return DateTimeUtils.ConvertDateTimeToJavaScriptTicks(dateTime, false);
         }
 
         private void WriteString(string s, int byteCount, int? calculatedlengthPrefix)
