@@ -6,9 +6,9 @@
     <Authors>James Newton-King</Authors>
     <Company>Newtonsoft</Company>
     <AssemblyTitle>Json.NET BSON</AssemblyTitle>
-    <Description>Json.NET BSON adds support for reading and writing BSON to Json.NET</Description>
+    <Description>Json.NET BSON adds support for reading and writing BSON</Description>
     <Copyright>Copyright © James Newton-King 2017</Copyright>
-    <Summary>Json.NET BSON adds support for reading and writing BSON to Json.NET</Summary>
+    <Summary>Json.NET BSON adds support for reading and writing BSON</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Newtonsoft.Json.Bson</PackageId>
     <PackageTags>bson</PackageTags>
@@ -22,7 +22,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-build001110" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-beta1" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <DefineConstants>HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_CHAR_TO_STRING_WITH_CULTURE;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>

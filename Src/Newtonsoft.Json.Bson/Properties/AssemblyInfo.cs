@@ -32,27 +32,10 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if NETSTANDARD1_0 
-[assembly: AssemblyTitle("Json.NET .NET Standard 1.0")]
-#elif NETSTANDARD1_1
-[assembly: AssemblyTitle("Json.NET .NET Standard 1.1")]
-#elif PORTABLE40
-[assembly: AssemblyTitle("Json.NET Portable .NET 4.0")]
-#elif PORTABLE
-[assembly: AssemblyTitle("Json.NET Portable")]
-#elif DOTNET
-[assembly: AssemblyTitle("Json.NET .NET Platform")]
-#elif NET20
-[assembly: AssemblyTitle("Json.NET .NET 2.0")]
-[assembly: AllowPartiallyTrustedCallers]
-#elif NET35
-[assembly: AssemblyTitle("Json.NET .NET 3.5")]
-[assembly: AllowPartiallyTrustedCallers]
-#elif NET40
-[assembly: AssemblyTitle("Json.NET .NET 4.0")]
-[assembly: AllowPartiallyTrustedCallers]
+#if NETSTANDARD1_1
+[assembly: AssemblyTitle("Json.NET BSON .NET Standard 1.1")]
 #else
-[assembly: AssemblyTitle("Json.NET")]
+[assembly: AssemblyTitle("Json.NET BSON")]
 [assembly: AllowPartiallyTrustedCallers]
 #endif
 
@@ -63,11 +46,11 @@ using System.Security;
 [assembly: InternalsVisibleTo("Newtonsoft.Json.Bson.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f561df277c6c0b497d629032b410cdcf286e537c054724f7ffa0164345f62b3e642029d7a80cc351918955328c4adc8a048823ef90b0cf38ea7db0d729caf2b633c3babe08b0310198c1081995c19029bc675193744eab9d7345b8a67258ec17d112cebdbbb2a281487dceeafb9d83aa930f32103fbe1d2911425bc5744002c7")]
 #endif
 
-[assembly: AssemblyDescription("Json.NET is a popular high-performance JSON framework for .NET")]
+[assembly: AssemblyDescription("Json.NET BSON adds support for reading and writing BSON")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Newtonsoft")]
-[assembly: AssemblyProduct("Json.NET")]
-[assembly: AssemblyCopyright("Copyright © James Newton-King 2008")]
+[assembly: AssemblyProduct("Json.NET BSON")]
+[assembly: AssemblyCopyright("Copyright © James Newton-King 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -80,7 +63,7 @@ using System.Security;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("9ca358aa-317b-4925-8ada-4a29e943a363")]
+[assembly: Guid("2ee3ae96-a266-43c5-857b-7ade5af22940")]
 #endif
 
 // Version information for an assembly consists of the following four values:
