@@ -40,7 +40,7 @@ namespace Newtonsoft.Json.Bson
     /// <summary>
     /// Represents a writer that provides a fast, non-cached, forward-only way of generating BSON data.
     /// </summary>
-    public class BsonDataWriter : JsonWriter
+    public partial class BsonDataWriter : JsonWriter
     {
         private readonly BsonBinaryWriter _writer;
 
@@ -66,6 +66,14 @@ namespace Newtonsoft.Json.Bson
         public BsonDataWriter(Stream stream)
         {
             ValidationUtils.ArgumentNotNull(stream, nameof(stream));
+#if HAVE_ASYNC
+            if (GetType() == typeof(BsonDataWriter))
+            {
+                _safeAsync = true;
+                _writer = new BsonBinaryWriter(new AsyncBinaryWriter(stream));
+                return;
+            }
+#endif
             _writer = new BsonBinaryWriter(new BinaryWriter(stream));
         }
 
@@ -76,6 +84,14 @@ namespace Newtonsoft.Json.Bson
         public BsonDataWriter(BinaryWriter writer)
         {
             ValidationUtils.ArgumentNotNull(writer, nameof(writer));
+#if HAVE_ASYNC
+            if (GetType() == typeof(BsonDataWriter) && writer.GetType() == typeof(BinaryWriter))
+            {
+                _safeAsync = true;
+                _writer = new BsonBinaryWriter(new AsyncBinaryWriterOwningWriter(writer));
+                return;
+            }
+#endif
             _writer = new BsonBinaryWriter(writer);
         }
 
@@ -96,6 +112,12 @@ namespace Newtonsoft.Json.Bson
             base.WriteEnd(token);
             RemoveParent();
 
+#if HAVE_ASYNC
+            if (_finishingAsync)
+            {
+                return;
+            }
+#endif
             if (Top == 0)
             {
                 _writer.WriteToken(_root);
