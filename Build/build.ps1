@@ -1,8 +1,8 @@
 ﻿properties { 
-  $zipFileName = "JsonBson10r1.zip"
+  $zipFileName = "JsonBson10r2.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.1"
-  $nugetPrerelease = "beta1"
+  $nugetPrerelease = "beta2"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Newtonsoft.Json.Bson"
   $signAssemblies = $false

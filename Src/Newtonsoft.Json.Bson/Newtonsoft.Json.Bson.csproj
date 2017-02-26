@@ -8,6 +8,7 @@
     <AssemblyTitle>Json.NET BSON</AssemblyTitle>
     <Description>Json.NET BSON adds support for reading and writing BSON</Description>
     <Copyright>Copyright © James Newton-King 2017</Copyright>
+    <Title>Json.NET BSON</Title>
     <Summary>Json.NET BSON adds support for reading and writing BSON</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Newtonsoft.Json.Bson</PackageId>
