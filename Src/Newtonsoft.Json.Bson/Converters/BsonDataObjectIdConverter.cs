@@ -24,9 +24,7 @@
 #endregion
 
 using System;
-using Newtonsoft.Json.Bson;
 using System.Globalization;
-using Newtonsoft.Json.Utilities;
 using Newtonsoft.Json.Bson.Utilities;
 
 namespace Newtonsoft.Json.Bson.Converters
