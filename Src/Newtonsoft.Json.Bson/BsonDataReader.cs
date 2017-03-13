@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Bson.Utilities;
 using Newtonsoft.Json.Linq;
 
@@ -37,7 +36,7 @@ namespace Newtonsoft.Json.Bson
     /// <summary>
     /// Represents a reader that provides fast, non-cached, forward-only access to serialized BSON data.
     /// </summary>
-    public class BsonDataReader : JsonReader
+    public partial class BsonDataReader : JsonReader
     {
         private const int MaxCharBytesSize = 128;
         private static readonly byte[] SeqRange1 = new byte[] { 0, 127 }; // range of 1-byte sequence
@@ -146,10 +145,17 @@ namespace Newtonsoft.Json.Bson
         public BsonDataReader(Stream stream, bool readRootValueAsArray, DateTimeKind dateTimeKindHandling)
         {
             ValidationUtils.ArgumentNotNull(stream, nameof(stream));
-            _reader = new BinaryReader(stream);
             _stack = new List<ContainerContext>();
             _readRootValueAsArray = readRootValueAsArray;
             _dateTimeKindHandling = dateTimeKindHandling;
+#if HAVE_ASYNC
+            if (GetType() == typeof(BsonDataReader))
+            {
+                _reader = _asyncReader = new AsyncBinaryReader(stream);
+                return;
+            }
+#endif
+            _reader = new BinaryReader(stream);
         }
 
         /// <summary>
@@ -161,10 +167,17 @@ namespace Newtonsoft.Json.Bson
         public BsonDataReader(BinaryReader reader, bool readRootValueAsArray, DateTimeKind dateTimeKindHandling)
         {
             ValidationUtils.ArgumentNotNull(reader, nameof(reader));
-            _reader = reader;
             _stack = new List<ContainerContext>();
             _readRootValueAsArray = readRootValueAsArray;
             _dateTimeKindHandling = dateTimeKindHandling;
+#if HAVE_ASYNC
+            if (GetType() == typeof(BsonDataReader) && reader.GetType() == typeof(BinaryWriter))
+            {
+                _reader = _asyncReader = new AsyncBinaryReaderOwningReader(reader);
+                return;
+            }
+#endif
+            _reader = reader;
         }
 
         private string ReadElement()

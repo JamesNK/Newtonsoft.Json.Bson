@@ -37,6 +37,7 @@ namespace Newtonsoft.Json.Bson.Utilities
         // Pre-allocate to avoid wasted allocations.
         public static readonly Task<bool> False = Task.FromResult(false);
         public static readonly Task<bool> True = Task.FromResult(true);
+        private static Task<string> s_EmptyString;
 
         internal static Task<bool> ToAsync(this bool value) => value ? True : False;
 
@@ -68,6 +69,9 @@ namespace Newtonsoft.Json.Bson.Utilities
         // the same cached task that Task.CompletedTask returns as of 4.6, but we'll add
         // our own cached field for previous frameworks.
         internal static readonly Task CompletedTask = Task.Delay(0);
+
+        public static Task<string> EmptyString => s_EmptyString ?? (s_EmptyString = Task.FromResult(""));
+
 
         public static Task WriteAsync(this TextWriter writer, char value, CancellationToken cancellationToken)
         {
