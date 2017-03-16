@@ -28,14 +28,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <DefineConstants>NETSTANDARD1_1;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-build001135" />
   </ItemGroup>
 </Project>

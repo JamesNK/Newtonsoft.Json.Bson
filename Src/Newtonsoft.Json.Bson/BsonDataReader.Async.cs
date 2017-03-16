@@ -26,6 +26,7 @@
 #if HAVE_ASYNC
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 #if HAVE_BIG_INTEGER
@@ -139,7 +140,9 @@ namespace Newtonsoft.Json.Bson
             SetToken(JsonToken.StartObject);
             _bsonReaderState = BsonReaderState.CodeWScopeScopeObject;
 
-            PushContext(new ContainerContext(BsonType.Object) { Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false) });
+            ContainerContext newContext = new ContainerContext(BsonType.Object);
+            PushContext(newContext);
+            newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
 
             return true;
         }
@@ -211,9 +214,13 @@ namespace Newtonsoft.Json.Bson
 
         private async Task<bool> ReadNormalStartAsync(CancellationToken cancellationToken)
         {
-            SetToken(_readRootValueAsArray ? JsonToken.StartArray : JsonToken.StartObject);
-            PushContext(new ContainerContext(_readRootValueAsArray ? BsonType.Array : BsonType.Object));
-            new ContainerContext(_readRootValueAsArray ? BsonType.Array : BsonType.Object).Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+            JsonToken token = (!_readRootValueAsArray) ? JsonToken.StartObject : JsonToken.StartArray;
+            BsonType type = (!_readRootValueAsArray) ? BsonType.Object : BsonType.Array;
+
+            SetToken(token);
+            ContainerContext newContext = new ContainerContext(type);
+            PushContext(newContext);
+            newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
             return true;
         }
 
@@ -343,15 +350,23 @@ namespace Newtonsoft.Json.Bson
                     SetToken(JsonToken.String, await ReadLengthStringAsync(cancellationToken).ConfigureAwait(false));
                     break;
                 case BsonType.Object:
-                        SetToken(JsonToken.StartObject);
+                {
+                    SetToken(JsonToken.StartObject);
 
-                        PushContext(new ContainerContext(BsonType.Object) { Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false) });
-                        break;
+                    ContainerContext newContext = new ContainerContext(BsonType.Object);
+                    PushContext(newContext);
+                    newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+                }
+                    break;
                 case BsonType.Array:
-                        SetToken(JsonToken.StartArray);
+                {
+                    SetToken(JsonToken.StartArray);
 
-                        PushContext(new ContainerContext(BsonType.Array) { Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false) });
-                        break;
+                    ContainerContext newContext = new ContainerContext(BsonType.Array);
+                    PushContext(newContext);
+                    newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+                }
+                    break;
                 case BsonType.Binary:
                     Tuple<byte[], BsonBinaryType> data = await ReadBinaryAsync(cancellationToken).ConfigureAwait(false);
 
@@ -702,9 +717,9 @@ namespace Newtonsoft.Json.Bson
                         Guid g;
                         if (s.Length == 0)
                         {
-                            data = Json.Utilities.CollectionUtils.ArrayEmpty<byte>();
+                            data = CollectionUtils.ArrayEmpty<byte>();
                         }
-                        else if (Json.Utilities.ConvertUtils.TryConvertGuid(s, out g))
+                        else if (ConvertUtils.TryConvertGuid(s, out g))
                         {
                             data = g.ToByteArray();
                         }
@@ -739,13 +754,13 @@ namespace Newtonsoft.Json.Bson
         private async Task ReadIntoWrappedTypeObjectAsync(CancellationToken cancellationToken)
         {
             await ReaderReadAndAssertAsync(cancellationToken).ConfigureAwait(false);
-            if (Value?.ToString() == Serialization.JsonTypeReflector.TypePropertyName)
+            if (Value?.ToString() == "$type")
             {
                 await ReaderReadAndAssertAsync(cancellationToken).ConfigureAwait(false);
                 if (Value != null && Value.ToString().StartsWith("System.Byte[]", StringComparison.Ordinal))
                 {
                     await ReaderReadAndAssertAsync(cancellationToken).ConfigureAwait(false);
-                    if (Value?.ToString() == Serialization.JsonTypeReflector.ValuePropertyName)
+                    if (Value?.ToString() == "$value")
                     {
                         return;
                     }
@@ -829,6 +844,31 @@ namespace Newtonsoft.Json.Bson
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Error reading date. Unexpected token: {0}.".FormatWith(CultureInfo.InvariantCulture, t));
             }
+        }
+
+        internal DateTimeOffset? ReadDateTimeOffsetString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            DateTimeOffset dt;
+            if (DateTimeUtils.TryParseDateTimeOffset(s, DateFormatString, Culture, out dt))
+            {
+                SetToken(JsonToken.Date, dt, false);
+                return dt;
+            }
+
+            if (DateTimeOffset.TryParse(s, Culture, DateTimeStyles.RoundtripKind, out dt))
+            {
+                SetToken(JsonToken.Date, dt, false);
+                return dt;
+            }
+
+            SetToken(JsonToken.String, s, false);
+            throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to DateTimeOffset: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
         }
 
         /// <summary>
@@ -989,7 +1029,7 @@ namespace Newtonsoft.Json.Bson
                     return (string)Value;
             }
 
-            if (Json.Utilities.JsonTokenUtils.IsPrimitiveToken(t))
+            if (JsonTokenUtils.IsPrimitiveToken(t))
             {
                 if (Value != null)
                 {
@@ -1011,6 +1051,167 @@ namespace Newtonsoft.Json.Bson
             }
 
             throw ExceptionUtils.CreateJsonReaderException(this, "Error reading string. Unexpected token: {0}.".FormatWith(CultureInfo.InvariantCulture, t));
+        }
+
+        internal async Task ReaderReadAndAssertAsync(CancellationToken cancellationToken)
+        {
+            if (!await ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                throw CreateUnexpectedEndException();
+            }
+        }
+
+        internal JsonReaderException CreateUnexpectedEndException()
+        {
+            return ExceptionUtils.CreateJsonReaderException(this, "Unexpected end when reading JSON.");
+        }
+
+        internal async Task<byte[]> ReadArrayIntoByteArrayAsync(CancellationToken cancellationToken)
+        {
+            List<byte> buffer = new List<byte>();
+
+            while (true)
+            {
+                if (!await ReadAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    SetToken(JsonToken.None);
+                }
+
+                if (ReadArrayElementIntoByteArrayReportDone(buffer))
+                {
+                    byte[] d = buffer.ToArray();
+                    SetToken(JsonToken.Bytes, d, false);
+                    return d;
+                }
+            }
+        }
+
+        private bool ReadArrayElementIntoByteArrayReportDone(List<byte> buffer)
+        {
+            switch (TokenType)
+            {
+                case JsonToken.None:
+                    throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected end when reading bytes.");
+                case JsonToken.Integer:
+                    buffer.Add(Convert.ToByte(Value, CultureInfo.InvariantCulture));
+                    return false;
+                case JsonToken.EndArray:
+                    return true;
+                case JsonToken.Comment:
+                    return false;
+                default:
+                    throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected token when reading bytes: {0}.".FormatWith(CultureInfo.InvariantCulture, TokenType));
+            }
+        }
+
+        internal int? ReadInt32String(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            int i;
+            if (int.TryParse(s, NumberStyles.Integer, Culture, out i))
+            {
+                SetToken(JsonToken.Integer, i, false);
+                return i;
+            }
+            else
+            {
+                SetToken(JsonToken.String, s, false);
+                throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to integer: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
+            }
+        }
+
+        internal double? ReadDoubleString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            double d;
+            if (double.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, Culture, out d))
+            {
+                SetToken(JsonToken.Float, d, false);
+                return d;
+            }
+            else
+            {
+                SetToken(JsonToken.String, s, false);
+                throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to double: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
+            }
+        }
+
+        internal decimal? ReadDecimalString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            decimal d;
+            if (decimal.TryParse(s, NumberStyles.Number, Culture, out d))
+            {
+                SetToken(JsonToken.Float, d, false);
+                return d;
+            }
+            else
+            {
+                SetToken(JsonToken.String, s, false);
+                throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to decimal: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
+            }
+        }
+
+        internal DateTime? ReadDateTimeString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            DateTime dt;
+            if (DateTimeUtils.TryParseDateTime(s, DateTimeZoneHandling, DateFormatString, Culture, out dt))
+            {
+                dt = DateTimeUtils.EnsureDateTime(dt, DateTimeZoneHandling);
+                SetToken(JsonToken.Date, dt, false);
+                return dt;
+            }
+
+            if (DateTime.TryParse(s, Culture, DateTimeStyles.RoundtripKind, out dt))
+            {
+                dt = DateTimeUtils.EnsureDateTime(dt, DateTimeZoneHandling);
+                SetToken(JsonToken.Date, dt, false);
+                return dt;
+            }
+
+            throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to DateTime: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
+        }
+
+        internal bool? ReadBooleanString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                SetToken(JsonToken.Null, null, false);
+                return null;
+            }
+
+            bool b;
+            if (bool.TryParse(s, out b))
+            {
+                SetToken(JsonToken.Boolean, b, false);
+                return b;
+            }
+            else
+            {
+                SetToken(JsonToken.String, s, false);
+                throw ExceptionUtils.CreateJsonReaderException(this, "Could not convert string to boolean: {0}.".FormatWith(CultureInfo.InvariantCulture, s));
+            }
         }
     }
 }
