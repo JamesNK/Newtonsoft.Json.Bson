@@ -32,8 +32,8 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if NETSTANDARD1_1
-[assembly: AssemblyTitle("Json.NET BSON .NET Standard 1.1")]
+#if NETSTANDARD1_3
+[assembly: AssemblyTitle("Json.NET BSON .NET Standard 1.3")]
 #else
 [assembly: AssemblyTitle("Json.NET BSON")]
 [assembly: AllowPartiallyTrustedCallers]

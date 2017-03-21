@@ -31,23 +31,10 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-#if NETSTANDARD1_0
-[assembly: AssemblyTitle("Json.NET Tests .NET Standard 1.0")]
-#elif NETSTANDARD1_1
-[assembly: AssemblyTitle("Json.NET Tests .NET Standard 1.1")]
-#elif PORTABLE40
-[assembly: AssemblyTitle("Json.NET Tests Portable .NET 4.0")]
-#elif PORTABLE
-[assembly: AssemblyTitle("Json.NET Tests Portable")]
-#elif NET20
-[assembly: AssemblyTitle("Json.NET Tests .NET 2.0")]
-#elif NET35
-[assembly: AssemblyTitle("Json.NET Tests .NET 3.5")]
-#elif NET40
-[assembly: AssemblyTitle("Json.NET Tests .NET 4.0")]
+#if NETSTANDARD1_3
+[assembly: AssemblyTitle("Json.NET BSON Tests .NET Core Application 1.0")]
 #else
-
-[assembly: AssemblyTitle("Json.NET Tests")]
+[assembly: AssemblyTitle("Json.NET BSON Tests")]
 #endif
 
 #if DNXCORE50
@@ -57,8 +44,8 @@ using System.Security;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Newtonsoft")]
-[assembly: AssemblyProduct("Json.NET Tests")]
-[assembly: AssemblyCopyright("Copyright © James Newton-King 2008")]
+[assembly: AssemblyProduct("Json.NET BSON Tests")]
+[assembly: AssemblyCopyright("Copyright © James Newton-King 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -82,5 +69,5 @@ using System.Security;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("10.0.0.0")]
-[assembly: AssemblyFileVersion("10.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

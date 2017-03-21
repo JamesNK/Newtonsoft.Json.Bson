@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
     <VersionPrefix>1.0.1</VersionPrefix>
-    <VersionSuffix>beta1</VersionSuffix>
+    <VersionSuffix></VersionSuffix>
     <Authors>James Newton-King</Authors>
     <Company>Newtonsoft</Company>
     <AssemblyTitle>Json.NET BSON</AssemblyTitle>
@@ -25,10 +25,10 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <DefineConstants>HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_CHAR_TO_STRING_WITH_CULTURE;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
-    <DefineConstants>NETSTANDARD1_1;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <DefineConstants>NETSTANDARD1_3;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1-build001135" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
   </ItemGroup>
 </Project>
