@@ -1,8 +1,8 @@
 ﻿properties { 
-  $zipFileName = "JsonBson10r2.zip"
+  $zipFileName = "JsonBson10r1.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.1"
-  $nugetPrerelease = "beta2"
+  $nugetPrerelease = $null
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Newtonsoft.Json.Bson"
   $signAssemblies = $false
@@ -63,8 +63,8 @@ task Build -depends Clean {
   $projectPath = "$workingSourceDir\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj"
 
   $xml = [xml](Get-Content $projectPath)
-  Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionPrefix/text()" -value $majorWithReleaseVersion
-  Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionSuffix/text()" -value $nugetPrerelease
+  Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionPrefix" -value $majorWithReleaseVersion
+  Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionSuffix" -value $nugetPrerelease
 
   Write-Host $xml.OuterXml
 
