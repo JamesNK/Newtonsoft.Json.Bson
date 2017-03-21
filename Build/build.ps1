@@ -22,7 +22,7 @@
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
   $builds = @(
-    @{Name = "Newtonsoft.Json.Bson"; TestsName = "Newtonsoft.Json.Bson.Tests"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; NuGetDir = "net45,netstandard1.0,netstandard1.1"; Framework=$null; Enabled=$true},
+    @{Name = "Newtonsoft.Json.Bson"; TestsName = "Newtonsoft.Json.Bson.Tests"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; NuGetDir = "net45,netstandard1.3"; Framework=$null; Enabled=$true},
     @{Name = "Newtonsoft.Json.Bson.Net45"; TestsName = "Newtonsoft.Json.Bson.Tests.Net45"; BuildFunction = $null; TestsFunction = "NUnitTests"; NuGetDir = "net45"; Framework="net-4.0"; Enabled=$true}
   )
 }
