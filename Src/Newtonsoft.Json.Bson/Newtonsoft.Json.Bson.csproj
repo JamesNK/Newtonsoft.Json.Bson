@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
     <VersionPrefix>1.0.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>James Newton-King</Authors>
@@ -22,13 +23,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <DefineConstants>HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_CHAR_TO_STRING_WITH_CULTURE;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <DefineConstants>NETSTANDARD1_3;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
-  </ItemGroup>
 </Project>

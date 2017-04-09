@@ -210,6 +210,15 @@ namespace Newtonsoft.Json.Bson.Tests
         }
 #endif
 
+        public static string ResolvePath(string path)
+        {
+#if !DNXCORE50
+            return Path.Combine(TestContext.CurrentContext.TestDirectory, path);
+#else
+            return path;
+#endif
+        }
+
         protected string BytesToHex(byte[] bytes)
         {
             return BytesToHex(bytes, false);
