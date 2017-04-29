@@ -2,14 +2,15 @@
   <PropertyGroup>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;netstandard1.3</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
     <VersionPrefix>1.0.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>James Newton-King</Authors>
     <Company>Newtonsoft</Company>
-    <AssemblyTitle>Json.NET BSON</AssemblyTitle>
+    <Product>Json.NET BSON</Product>
     <Description>Json.NET BSON adds support for reading and writing BSON</Description>
     <Copyright>Copyright © James Newton-King 2017</Copyright>
-    <Title>Json.NET BSON</Title>
     <Summary>Json.NET BSON adds support for reading and writing BSON</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Newtonsoft.Json.Bson</PackageId>
@@ -21,16 +22,18 @@
     <RepositoryType>git</RepositoryType>
     <AssemblyName>Newtonsoft.Json.Bson</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <AssemblyTitle>Json.NET BSON</AssemblyTitle>
     <DefineConstants>HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_CHAR_TO_STRING_WITH_CULTURE;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <AssemblyTitle>Json.NET BSON .NET Standard 1.3</AssemblyTitle>
     <DefineConstants>NETSTANDARD1_3;PORTABLE;HAVE_ASYNC;HAVE_BIG_INTEGER;HAVE_DATE_TIME_OFFSET;HAVE_TIME_ZONE_INFO;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 </Project>

@@ -4,10 +4,11 @@
     <TargetFrameworks Condition="'$(TestFrameworks)'!=''">$(TestFrameworks)</TargetFrameworks>
     <VersionPrefix>1.0.1</VersionPrefix>
     <Authors>James Newton-King</Authors>
+    <Company>Newtonsoft</Company>
+    <Product>Json.NET BSON</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>Copyright © James Newton-King 2017</Copyright>
     <AssemblyName>Newtonsoft.Json.Bson.Tests</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- Workaround for https://github.com/nunit/nunit3-vs-adapter/issues/296 -->
     <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.1'">Full</DebugType>
   </PropertyGroup>

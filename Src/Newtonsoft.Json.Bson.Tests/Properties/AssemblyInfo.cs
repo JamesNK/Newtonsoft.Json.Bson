@@ -31,21 +31,10 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-#if NETSTANDARD1_3
-[assembly: AssemblyTitle("Json.NET BSON Tests .NET Core Application 1.0")]
-#else
-[assembly: AssemblyTitle("Json.NET BSON Tests")]
-#endif
-
 #if DNXCORE50
 [assembly: Xunit.CollectionBehavior(DisableTestParallelization = true)]
 #endif
 
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Newtonsoft")]
-[assembly: AssemblyProduct("Json.NET BSON Tests")]
-[assembly: AssemblyCopyright("Copyright © James Newton-King 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -58,16 +47,3 @@ using System.Security;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
 [assembly: Guid("0be3d72b-d2ef-409c-985c-d3ede89a25f1")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
