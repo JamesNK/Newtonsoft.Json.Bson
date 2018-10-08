@@ -74,6 +74,7 @@ namespace Newtonsoft.Json.Bson.Tests
             public MemoryStream Blob { get; set; }
         }
 
+        [Test]
         public void Bson_SupportMultipleContent()
         {
             MemoryStream myStream = new MemoryStream();
@@ -1404,6 +1405,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual(JsonToken.EndObject, reader.TokenType);
         }
 
+        [Test]
         public void UriGuidTimeSpanTestClassEmptyTest()
         {
             UriGuidTimeSpanTestClass c1 = new UriGuidTimeSpanTestClass();
@@ -1425,6 +1427,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual(c1.Uri, c2.Uri);
         }
 
+        [Test]
         public void UriGuidTimeSpanTestClassValuesTest()
         {
             UriGuidTimeSpanTestClass c1 = new UriGuidTimeSpanTestClass
@@ -1481,10 +1484,11 @@ namespace Newtonsoft.Json.Bson.Tests
                 CollectionAssert.AreEquivalent(new byte[] { 72, 63, 62, 71, 92, 55 }, newObject.Data);
             }
         }
-        
+
+        [Test]
         public void Utf8Text()
         {
-            string badText = System.IO.File.ReadAllText(@"PoisonText.txt");
+            string badText = System.IO.File.ReadAllText(ResolvePath(@"PoisonText.txt"));
             var j = new JObject();
             j["test"] = badText;
 

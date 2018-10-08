@@ -11,24 +11,29 @@
     <AssemblyName>Newtonsoft.Json.Bson.Tests</AssemblyName>
     <!-- Workaround for https://github.com/nunit/nunit3-vs-adapter/issues/296 -->
     <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.1'">Full</DebugType>
+    <!-- Disabled because SourceLink isn't referenced to calculate paths -->
+    <DeterministicSourcePaths>false</DeterministicSourcePaths>
   </PropertyGroup>
   <ItemGroup>
     <None Include="SpaceShipV2.bson">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="PoisonText.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <ProjectReference Include="..\Newtonsoft.Json.Bson\Newtonsoft.Json.Bson.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net45'">
-    <PackageReference Include="NUnit" Version="3.6.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.7.0" />
+    <PackageReference Include="NUnit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <DefineConstants>NET45;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1'">
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
   </ItemGroup>
   <ItemGroup>
     <!-- Tracking for removal https://github.com/Microsoft/vstest/issues/472 -->
