@@ -32,7 +32,7 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if !NETSTANDARD1_3
+#if !(NETSTANDARD1_3 || NETSTANDARD2_0)
 [assembly: AllowPartiallyTrustedCallers]
 #endif
 

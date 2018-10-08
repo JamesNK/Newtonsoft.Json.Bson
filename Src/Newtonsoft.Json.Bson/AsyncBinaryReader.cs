@@ -155,6 +155,7 @@ namespace Newtonsoft.Json.Bson
             return result;
         }
     }
+
     internal sealed class AsyncBinaryReaderOwningReader : AsyncBinaryReader
     {
         private readonly BinaryReader _reader;
