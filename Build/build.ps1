@@ -30,6 +30,7 @@
   $nunitConsolePath = "$buildDir\Temp\NUnit.ConsoleRunner.$nunitConsoleVersion"
 
   $builds = @(
+    @{Framework = "netstandard2.0"; TestsFunction = "NetCliTests"; TestFramework = "netcoreapp2.0"; Enabled=$true},
     @{Framework = "netstandard1.3"; TestsFunction = "NetCliTests"; TestFramework = "netcoreapp1.1"; Enabled=$true},
     @{Framework = "net45"; TestsFunction = "NUnitTests"; NUnitFramework="net-4.0"; Enabled=$true}
   )
@@ -192,10 +193,11 @@ function NetCliTests($build)
     exec { dotnet --version | Out-Default }
 
     Write-Host -ForegroundColor Green "Running tests for $testDir"
+    Write-Host "Location: $location"
+    Write-Host "Project path: $projectPath"
     Write-Host
 
-    exec { dotnet test $projectPath -f $testDir -c Release -l trx | Out-Default }
-    copy-item -Path "$location\TestResults\*.trx" -Destination $workingDir
+    exec { dotnet test $projectPath -f $testDir -c Release -l trx -r $workingDir --no-restore --no-build | Out-Default }
   }
   finally
   {
@@ -225,17 +227,17 @@ function NUnitTests($build)
 function GetVersion($majorVersion)
 {
     $now = [DateTime]::Now
-    
+
     $year = $now.Year - 2000
     $month = $now.Month
     $totalMonthsSince2000 = ($year * 12) + $month
     $day = $now.Day
     $minor = "{0}{1:00}" -f $totalMonthsSince2000, $day
-    
+
     $hour = $now.Hour
     $minute = $now.Minute
     $revision = "{0:00}{1:00}" -f $hour, $minute
-    
+
     return $majorVersion + "." + $minor
 }
 
@@ -245,12 +247,12 @@ function Edit-XmlNodes {
         [string] $xpath = $(throw "xpath is a required parameter"),
         [string] $value = $(throw "value is a required parameter")
     )
-    
+
     $nodes = $doc.SelectNodes($xpath)
     $count = $nodes.Count
 
     Write-Host "Found $count nodes with path '$xpath'"
-    
+
     foreach ($node in $nodes) {
         if ($node -ne $null) {
             if ($node.NodeType -eq "Element")
