@@ -115,6 +115,32 @@ namespace Newtonsoft.Json.Bson.Tests
         }
 
         [Test]
+        public void Bson_SupportMultipleContent_SingleContent()
+        {
+            MemoryStream myStream = new MemoryStream();
+            BsonDataWriter writer = new BsonDataWriter(myStream);
+            JsonSerializer serializer = new JsonSerializer();
+            MyTest tst1 = new MyTest
+            {
+                TimeStamp = new DateTime(2000, 12, 20, 12, 59, 59, DateTimeKind.Utc),
+                UserName = "Joe Doe"
+            };
+            serializer.Serialize(writer, tst1);
+
+            myStream.Seek(0, SeekOrigin.Begin);
+
+            BsonDataReader reader = new BsonDataReader(myStream)
+            {
+                SupportMultipleContent = true,
+                DateTimeKindHandling = DateTimeKind.Utc
+            };
+
+            MyTest tst1A = serializer.Deserialize<MyTest>(reader);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [Test]
         public void CloseInput()
         {
             MemoryStream ms = new MemoryStream();
