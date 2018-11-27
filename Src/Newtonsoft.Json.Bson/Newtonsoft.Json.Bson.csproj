@@ -17,7 +17,7 @@
     <PackageTags>bson</PackageTags>
     <PackageIconUrl>http://www.newtonsoft.com/content/images/nugeticon.png</PackageIconUrl>
     <PackageProjectUrl>http://www.newtonsoft.com/json</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.github.com/JamesNK/Newtonsoft.Json.Bson/master/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RootNamespace>Newtonsoft.Json.Bson</RootNamespace>
     <AssemblyName>Newtonsoft.Json.Bson</AssemblyName>
