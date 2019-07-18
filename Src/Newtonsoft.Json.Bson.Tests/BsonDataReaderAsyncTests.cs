@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,7 +22,8 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 #if !(NET20 || NET35 || NET40 || PORTABLE40)
 
@@ -30,14 +32,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Text;
+
 #if DNXCORE50
 using Xunit;
 using Test = Xunit.FactAttribute;
 using Assert = Newtonsoft.Json.Bson.Tests.XUnitAssert;
 #else
+
 using NUnit.Framework;
+
 #endif
-using Newtonsoft.Json.Bson;
+
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -143,6 +148,30 @@ namespace Newtonsoft.Json.Bson.Tests
 
             Assert.AreEqual(1, l.Count);
             Assert.AreEqual(g, l[0]);
+        }
+
+        [Test]
+        public async Task ReadDecimalAsync()
+        {
+            byte[] data = HexToBytes("10-00-00-00-13-30-00-92-A9-53-42-34-42-F8-03-00-00-00-00-00-00-10-80-00");
+
+            MemoryStream ms = new MemoryStream(data);
+            BsonDataReader reader = new BsonDataReader(ms);
+            reader.ReadRootValueAsArray = true;
+
+            Assert.IsTrue(await reader.ReadAsync());
+            Assert.AreEqual(JsonToken.StartArray, reader.TokenType);
+
+            Assert.IsTrue(await reader.ReadAsync());
+            Assert.AreEqual(JsonToken.Float, reader.TokenType);
+            Assert.AreEqual(-28.6051368556538258m, reader.Value);
+            Assert.AreEqual(typeof(decimal), reader.ValueType);
+
+            Assert.IsTrue(await reader.ReadAsync());
+            Assert.AreEqual(JsonToken.EndArray, reader.TokenType);
+
+            Assert.IsFalse(await reader.ReadAsync());
+            Assert.AreEqual(JsonToken.None, reader.TokenType);
         }
 
         [Test]
@@ -933,10 +962,13 @@ namespace Newtonsoft.Json.Bson.Tests
             ms.Seek(0, SeekOrigin.Begin);
 
             BsonDataReader reader = new BsonDataReader(ms);
+
             // object
             await reader.ReadAsync();
+
             // property name
             await reader.ReadAsync();
+
             // string
             await reader.ReadAsync();
             return (string)reader.Value;
@@ -954,8 +986,10 @@ namespace Newtonsoft.Json.Bson.Tests
             ms.Seek(0, SeekOrigin.Begin);
 
             BsonDataReader reader = new BsonDataReader(ms);
+
             // object
             await reader.ReadAsync();
+
             // property name
             await reader.ReadAsync();
             return (string)reader.Value;
@@ -965,6 +999,7 @@ namespace Newtonsoft.Json.Bson.Tests
         public async Task TestReadLenStringValueShortTripleByteAsync()
         {
             StringBuilder sb = new StringBuilder();
+
             //sb.Append('1',127); //first char of euro at the end of the boundry.
             //sb.Append(euro, 5);
             //sb.Append('1',128);
@@ -984,7 +1019,7 @@ namespace Newtonsoft.Json.Bson.Tests
             sb.Append(Euro);
 
             string expected = sb.ToString();
-            Assert.AreEqual(expected, await  WriteAndReadStringValueAsync(expected));
+            Assert.AreEqual(expected, await WriteAndReadStringValueAsync(expected));
         }
 
         [Test]
@@ -997,7 +1032,7 @@ namespace Newtonsoft.Json.Bson.Tests
             sb.Append(Euro);
 
             string expected = sb.ToString();
-            string result = await  WriteAndReadStringValueAsync(expected);
+            string result = await WriteAndReadStringValueAsync(expected);
             Assert.AreEqual(expected, result);
         }
 
@@ -1008,7 +1043,7 @@ namespace Newtonsoft.Json.Bson.Tests
             sb.Append(Euro, 1); //Just one triple byte char in the string.
 
             string expected = sb.ToString();
-            Assert.AreEqual(expected, await  WriteAndReadStringValueAsync(expected));
+            Assert.AreEqual(expected, await WriteAndReadStringValueAsync(expected));
         }
 
         [Test]
@@ -1021,14 +1056,14 @@ namespace Newtonsoft.Json.Bson.Tests
             sb.Append(Euro);
 
             string expected = sb.ToString();
-            Assert.AreEqual(expected, await  WriteAndReadStringValueAsync(expected));
+            Assert.AreEqual(expected, await WriteAndReadStringValueAsync(expected));
         }
 
         [Test]
         public async Task TestReadStringValueAsync()
         {
             string expected = "test";
-            Assert.AreEqual(expected, await  WriteAndReadStringValueAsync(expected));
+            Assert.AreEqual(expected, await WriteAndReadStringValueAsync(expected));
         }
 
         [Test]
@@ -1037,13 +1072,14 @@ namespace Newtonsoft.Json.Bson.Tests
             StringBuilder sb = new StringBuilder();
             sb.Append('t', 150);
             string expected = sb.ToString();
-            Assert.AreEqual(expected, await  WriteAndReadStringValueAsync(expected));
+            Assert.AreEqual(expected, await WriteAndReadStringValueAsync(expected));
         }
 
         [Test]
         public async Task TestReadStringPropertyNameShortTripleByteAsync()
         {
             StringBuilder sb = new StringBuilder();
+
             //sb.Append('1',127); //first char of euro at the end of the boundry.
             //sb.Append(euro, 5);
             //sb.Append('1',128);

@@ -1,4 +1,5 @@
 #region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,18 +22,19 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
+
 #if HAVE_BIG_INTEGER
+
 using System.Numerics;
+
 #endif
-using System.Text;
+
 using Newtonsoft.Json.Bson.Utilities;
-using Newtonsoft.Json.Linq;
 using System.Globalization;
 
 namespace Newtonsoft.Json.Bson
@@ -250,6 +252,7 @@ namespace Newtonsoft.Json.Bson
         }
 
         #region WriteValue methods
+
         /// <summary>
         /// Writes a <see cref="Object"/> value.
         /// An error will raised if the value cannot be written as a single JSON token.
@@ -445,7 +448,7 @@ namespace Newtonsoft.Json.Bson
         public override void WriteValue(decimal value)
         {
             base.WriteValue(value);
-            AddValue(value, BsonType.Number);
+            AddValue(value, BsonType.PrecisionNumber);
         }
 
         /// <summary>
@@ -460,6 +463,7 @@ namespace Newtonsoft.Json.Bson
         }
 
 #if HAVE_DATE_TIME_OFFSET
+
         /// <summary>
         /// Writes a <see cref="DateTimeOffset"/> value.
         /// </summary>
@@ -469,6 +473,7 @@ namespace Newtonsoft.Json.Bson
             base.WriteValue(value);
             AddValue(value, BsonType.Date);
         }
+
 #endif
 
         /// <summary>
@@ -522,7 +527,8 @@ namespace Newtonsoft.Json.Bson
             base.WriteValue(value);
             AddToken(new BsonString(value.ToString(), true));
         }
-        #endregion
+
+        #endregion WriteValue methods
 
         /// <summary>
         /// Writes a <see cref="Byte"/>[] value that represents a BSON object id.
