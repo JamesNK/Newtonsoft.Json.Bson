@@ -89,10 +89,7 @@ namespace Newtonsoft.Json.Bson
 
     internal class BsonEmpty : BsonToken
     {
-        public static readonly BsonToken Null = new BsonEmpty(BsonType.Null);
-        public static readonly BsonToken Undefined = new BsonEmpty(BsonType.Undefined);
-
-        private BsonEmpty(BsonType type)
+        public BsonEmpty(BsonType type)
         {
             Type = type;
         }
@@ -124,10 +121,7 @@ namespace Newtonsoft.Json.Bson
 
     internal class BsonBoolean : BsonValue
     {
-        public static readonly BsonBoolean False = new BsonBoolean(false);
-        public static readonly BsonBoolean True = new BsonBoolean(true);
-
-        private BsonBoolean(bool value)
+        public BsonBoolean(bool value)
             : base(value, BsonType.Boolean)
         {
         }

@@ -127,7 +127,10 @@ namespace Newtonsoft.Json.Bson
                 }
                     break;
                 case BsonType.Boolean:
-                    _writer.Write(t == BsonBoolean.True);
+                {
+                    BsonBoolean value = (BsonBoolean)t;
+                    _writer.Write((bool)value.Value);
+                }
                     break;
                 case BsonType.Null:
                 case BsonType.Undefined:
