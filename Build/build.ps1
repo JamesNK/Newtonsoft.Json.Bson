@@ -7,7 +7,7 @@
   $packageId = "Newtonsoft.Json.Bson"
   $signAssemblies = $false
   $signKeyPath = "C:\Development\Releases\newtonsoft.snk"
-  $buildNuGet = $false
+  $buildNuGet = $true
   $msbuildVerbosity = 'minimal'
   $treatWarningsAsErrors = $false
   $workingName = if ($workingName) {$workingName} else {"Working"}
@@ -86,15 +86,16 @@ task Package -depends Build {
       throw "Could not find $sourcePath"
     }
 
-    robocopy $sourcePath $workingDir\Package\Bin\$finalDir Newtonsoft.Json.Bson.dll Newtonsoft.Json.Bson.pdb Newtonsoft.Json.Bson.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+    robocopy $sourcePath $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
   }
-  
+
   if ($buildNuGet)
   {
     Write-Host -ForegroundColor Green "Copy NuGet package"
 
     mkdir $workingDir\NuGet
     move -Path $sourceDir\Newtonsoft.Json.Bson\bin\Release\*.nupkg -Destination $workingDir\NuGet
+    move -Path $sourceDir\Newtonsoft.Json.Bson\bin\Release\*.snupkg -Destination $workingDir\NuGet
   }
   
   Copy-Item -Path $baseDir\LICENSE.md -Destination $workingDir\Package\
