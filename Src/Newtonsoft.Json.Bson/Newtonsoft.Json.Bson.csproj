@@ -15,7 +15,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Newtonsoft.Json.Bson</PackageId>
     <PackageTags>bson</PackageTags>
-    <PackageIconUrl>http://www.newtonsoft.com/content/images/nugeticon.png</PackageIconUrl>
+    <PackageIcon>packageIcon.png</PackageIcon>
+    <PackageIconUrl>https://www.newtonsoft.com/content/images/nugeticon.png</PackageIconUrl>
     <PackageProjectUrl>http://www.newtonsoft.com/json</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -23,6 +24,9 @@
     <AssemblyName>Newtonsoft.Json.Bson</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <MinClientVersion>2.12</MinClientVersion>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- including PDB files in NuGet for source link because symbolsource.org does not support portable PDBs -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
