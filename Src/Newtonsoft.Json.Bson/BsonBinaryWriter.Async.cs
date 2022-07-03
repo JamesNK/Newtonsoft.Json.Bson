@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,15 +22,16 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 #if HAVE_ASYNC
 
+using Newtonsoft.Json.Bson.Utilities;
 using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Bson.Utilities;
 
 namespace Newtonsoft.Json.Bson
 {
@@ -76,31 +78,46 @@ namespace Newtonsoft.Json.Bson
             {
                 case BsonType.Object:
                     return WriteObjectAsync((BsonObject)t, cancellationToken);
+
                 case BsonType.Array:
                     return WriteArrayAsync((BsonArray)t, cancellationToken);
+
                 case BsonType.Integer:
                     return _asyncWriter.WriteAsync(Convert.ToInt32(((BsonValue)t).Value, CultureInfo.InvariantCulture), cancellationToken);
+
                 case BsonType.Long:
                     return _asyncWriter.WriteAsync(Convert.ToInt64(((BsonValue)t).Value, CultureInfo.InvariantCulture), cancellationToken);
+
                 case BsonType.Number:
                     return _asyncWriter.WriteAsync(Convert.ToDouble(((BsonValue)t).Value, CultureInfo.InvariantCulture), cancellationToken);
+
+                case BsonType.PrecisionNumber:
+                    return _asyncWriter.WriteAsync(Convert.ToDecimal(((BsonValue)t).Value, CultureInfo.InvariantCulture), cancellationToken);
+
                 case BsonType.String:
                     BsonString bsonString = (BsonString)t;
                     return WriteStringAsync((string)bsonString.Value, bsonString.ByteCount, bsonString.CalculatedSize - 4, cancellationToken);
+
                 case BsonType.Boolean:
                     return _asyncWriter.WriteAsync((bool)((BsonValue)t).Value, cancellationToken);
+
                 case BsonType.Null:
                 case BsonType.Undefined:
                     return AsyncUtils.CompletedTask;
+
                 case BsonType.Date:
                     BsonValue value = (BsonValue)t;
                     return _asyncWriter.WriteAsync(TicksFromDateObject(value.Value), cancellationToken);
+
                 case BsonType.Binary:
                     return WriteBinaryAsync((BsonBinary)t, cancellationToken);
+
                 case BsonType.Oid:
                     return _asyncWriter.WriteAsync((byte[])((BsonValue)t).Value, cancellationToken);
+
                 case BsonType.Regex:
                     return WriteRegexAsync((BsonRegex)t, cancellationToken);
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(t), "Unexpected token when writing BSON: {0}".FormatWith(CultureInfo.InvariantCulture, t.Type));
             }

@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,7 +22,8 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 #if HAVE_ASYNC
 
@@ -102,6 +104,17 @@ namespace Newtonsoft.Json.Bson
             return buffer[0] | buffer[1] << 8 | buffer[2] << 16 | buffer[3] << 24;
         }
 
+        public async Task<decimal> ReadDecimalAsync(CancellationToken cancellationToken)
+        {
+            var buffer = await ReadBufferAsync(16, cancellationToken).ConfigureAwait(false);
+            var bits = new int[4];
+            for (var i = 0; i <= 15; i += 4)
+            {
+                bits[i / 4] = BitConverter.ToInt32(buffer, i);
+            }
+            return new decimal(bits);
+        }
+
         public async Task<double> ReadDoubleAsync(CancellationToken cancellationToken)
         {
             var buffer = await ReadBufferAsync(8, cancellationToken).ConfigureAwait(false);
@@ -168,12 +181,14 @@ namespace Newtonsoft.Json.Bson
         }
 
 #if HAVE_STREAM_READER_WRITER_CLOSE
+
         public override void Close()
         {
             // Don't call base.Close(). Let this reader decide
             // whether or not to close the stream.
             _reader.Close();
         }
+
 #endif
 
         protected override void Dispose(bool disposing)
