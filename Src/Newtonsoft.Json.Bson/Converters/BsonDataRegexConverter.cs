@@ -53,7 +53,7 @@ namespace Newtonsoft.Json.Bson.Converters
             BsonDataWriter bsonWriter = writer as BsonDataWriter;
             if (bsonWriter == null)
             {
-                throw ExceptionUtils.CreateJsonSerializationException(bsonWriter as IJsonLineInfo, bsonWriter.Path, "BsonDataRegexConverter only supports writing a regex with BsonDataWriter.", null);
+                throw ExceptionUtils.CreateJsonSerializationException(writer as IJsonLineInfo, writer.Path, "BsonDataRegexConverter only supports writing a regex with BsonDataWriter.", null);
             }
 
             WriteBson(bsonWriter, regex);
