@@ -11,8 +11,9 @@
   $msbuildVerbosity = 'minimal'
   $treatWarningsAsErrors = $false
   $workingName = if ($workingName) {$workingName} else {"Working"}
-  $netCliChannel = "Current"
-  $netCliVersion = "6.0.300"
+  $assemblyVersion = if ($assemblyVersion) {$assemblyVersion} else {$majorVersion + '.0.0'}
+  $netCliChannel = "STS"
+  $netCliVersion = "8.0.300"
   $nugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
   
   $baseDir  = resolve-path ..
@@ -23,14 +24,14 @@
   $workingDir = "$baseDir\$workingName"
 
   $nugetPath = "$buildDir\Temp\nuget.exe"
-  $vswhereVersion = "3.0.3"
+  $vswhereVersion = "3.1.7"
   $vswherePath = "$buildDir\Temp\vswhere.$vswhereVersion"
   $nunitConsoleVersion = "3.8.0"
   $nunitConsolePath = "$buildDir\Temp\NUnit.ConsoleRunner.$nunitConsoleVersion"
 
   $builds = @(
-    @{Framework = "netstandard2.0"; TestsFunction = "NetCliTests"; TestFramework = "net6.0"; Enabled=$true},
-    @{Framework = "netstandard1.3"; TestsFunction = "NetCliTests"; TestFramework = "netcoreapp3.1"; Enabled=$true},
+    @{Framework = "netstandard2.0"; TestsFunction = "NetCliTests"; TestFramework = "net8.0"; Enabled=$true},
+    @{Framework = "netstandard1.3"; TestsFunction = "NetCliTests"; TestFramework = "net6.0"; Enabled=$true},
     @{Framework = "net45"; TestsFunction = "NUnitTests"; TestFramework = "net46"; NUnitFramework="net-4.0"; Enabled=$true}
   )
 }
@@ -207,7 +208,7 @@ function NetCliTests($build)
     Write-Host "Project path: $projectPath"
     Write-Host
 
-    exec { dotnet test $projectPath -f $testDir -c Release -l trx -r $workingDir --no-restore --no-build | Out-Default }
+    exec { dotnet test $projectPath -f $testDir -c Release -l trx --results-directory $workingDir --no-restore --no-build | Out-Default }
   }
   finally
   {
