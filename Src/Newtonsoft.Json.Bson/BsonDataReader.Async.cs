@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,7 +22,8 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 #if HAVE_ASYNC
 
@@ -29,9 +31,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+
 #if HAVE_BIG_INTEGER
+
 using System.Numerics;
+
 #endif
+
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +57,7 @@ namespace Newtonsoft.Json.Bson
                 _currentElementType = typeReadTask.Result;
                 return ReadStringAsync(cancellationToken);
             }
-            
+
             return ReadElementAsync(typeReadTask, cancellationToken);
         }
 
@@ -78,11 +84,13 @@ namespace Newtonsoft.Json.Bson
                 case BsonReaderState.Normal:
                     readTask = ReadNormalAsync(cancellationToken);
                     break;
+
                 case BsonReaderState.ReferenceStart:
                 case BsonReaderState.ReferenceRef:
                 case BsonReaderState.ReferenceId:
                     readTask = ReadReferenceAsync(cancellationToken);
                     break;
+
                 case BsonReaderState.CodeWScopeStart:
                 case BsonReaderState.CodeWScopeCode:
                 case BsonReaderState.CodeWScopeScope:
@@ -90,6 +98,7 @@ namespace Newtonsoft.Json.Bson
                 case BsonReaderState.CodeWScopeScopeEnd:
                     readTask = ReadCodeWScopeAsync(cancellationToken);
                     break;
+
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state: {0}".FormatWith(CultureInfo.InvariantCulture, _bsonReaderState));
             }
@@ -165,8 +174,10 @@ namespace Newtonsoft.Json.Bson
                 case BsonReaderState.CodeWScopeStart:
                 case BsonReaderState.CodeWScopeScopeEnd:
                     break;
+
                 case BsonReaderState.CodeWScopeCode:
                     return ReadCodeWScopeCodeAsync(cancellationToken);
+
                 case BsonReaderState.CodeWScopeScope:
                     if (CurrentState != State.PostValue)
                     {
@@ -174,8 +185,10 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     break;
+
                 case BsonReaderState.CodeWScopeScopeObject:
                     return ReadCodeWScopeScopeObjectAsync(cancellationToken);
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -192,9 +205,11 @@ namespace Newtonsoft.Json.Bson
                 case BsonReaderState.ReferenceRef:
                     SetToken(JsonToken.String, await ReadLengthStringAsync(cancellationToken).ConfigureAwait(false));
                     return true;
+
                 case BsonReaderState.ReferenceId:
                     SetToken(JsonToken.Bytes, await ReadBytesAsync(12, cancellationToken).ConfigureAwait(false));
                     return true;
+
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + _bsonReaderState);
             }
@@ -275,13 +290,16 @@ namespace Newtonsoft.Json.Bson
             {
                 case State.Start:
                     return ReadNormalStartAsync(cancellationToken);
+
                 case State.Property:
                     return ReadNormalPropertyAsync(cancellationToken);
+
                 case State.ObjectStart:
                 case State.ArrayStart:
                 case State.PostValue:
                     ContainerContext context = _currentContext;
                     return context == null ? AsyncUtils.False : ReadNormalPostValueAsync(context, cancellationToken);
+
                 case State.Complete:
                 case State.Closed:
                 case State.ConstructorStart:
@@ -289,6 +307,7 @@ namespace Newtonsoft.Json.Bson
                 case State.Error:
                 case State.Finished:
                     return AsyncUtils.False;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -305,6 +324,7 @@ namespace Newtonsoft.Json.Bson
             switch (type)
             {
                 case BsonType.Number:
+                case BsonType.PrecisionNumber:
                 case BsonType.String:
                 case BsonType.Symbol:
                 case BsonType.Object:
@@ -319,12 +339,14 @@ namespace Newtonsoft.Json.Bson
                 case BsonType.TimeStamp:
                 case BsonType.Long:
                     return ReadTypeTrulyAsync(type, cancellationToken);
+
                 case BsonType.Undefined:
                 case BsonType.Null:
                 case BsonType.Reference:
                 case BsonType.CodeWScope:
                     ReadType(type);
                     return AsyncUtils.CompletedTask;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), "Unexpected BsonType value: " + type);
             }
@@ -334,6 +356,10 @@ namespace Newtonsoft.Json.Bson
         {
             switch (type)
             {
+                case BsonType.PrecisionNumber:
+                    SetToken(JsonToken.Float, Convert.ToDecimal(await ReadDecimalAsync(cancellationToken).ConfigureAwait(false), CultureInfo.InvariantCulture));
+                    break;
+
                 case BsonType.Number:
 
                     if (FloatParseHandling == FloatParseHandling.Decimal)
@@ -345,28 +371,32 @@ namespace Newtonsoft.Json.Bson
                         SetToken(JsonToken.Float, await ReadDoubleAsync(cancellationToken).ConfigureAwait(false));
                     }
                     break;
+
                 case BsonType.String:
                 case BsonType.Symbol:
                     SetToken(JsonToken.String, await ReadLengthStringAsync(cancellationToken).ConfigureAwait(false));
                     break;
+
                 case BsonType.Object:
-                {
-                    SetToken(JsonToken.StartObject);
+                    {
+                        SetToken(JsonToken.StartObject);
 
-                    ContainerContext newContext = new ContainerContext(BsonType.Object);
-                    PushContext(newContext);
-                    newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
-                }
+                        ContainerContext newContext = new ContainerContext(BsonType.Object);
+                        PushContext(newContext);
+                        newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+                    }
                     break;
+
                 case BsonType.Array:
-                {
-                    SetToken(JsonToken.StartArray);
+                    {
+                        SetToken(JsonToken.StartArray);
 
-                    ContainerContext newContext = new ContainerContext(BsonType.Array);
-                    PushContext(newContext);
-                    newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
-                }
+                        ContainerContext newContext = new ContainerContext(BsonType.Array);
+                        PushContext(newContext);
+                        newContext.Length = await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+                    }
                     break;
+
                 case BsonType.Binary:
                     Tuple<byte[], BsonBinaryType> data = await ReadBinaryAsync(cancellationToken).ConfigureAwait(false);
 
@@ -374,12 +404,15 @@ namespace Newtonsoft.Json.Bson
                         ? data.Item1
                         : (object)new Guid(data.Item1));
                     break;
+
                 case BsonType.Oid:
                     SetToken(JsonToken.Bytes, await ReadBytesAsync(12, cancellationToken).ConfigureAwait(false));
                     break;
+
                 case BsonType.Boolean:
                     SetToken(JsonToken.Boolean, Convert.ToBoolean(await ReadByteAsync(cancellationToken).ConfigureAwait(false)));
                     break;
+
                 case BsonType.Date:
                     DateTime dateTime = DateTimeUtils.ConvertJavaScriptTicksToDateTime(await ReadInt64Async(cancellationToken).ConfigureAwait(false));
 
@@ -388,6 +421,7 @@ namespace Newtonsoft.Json.Bson
                         case DateTimeKind.Unspecified:
                             dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified);
                             break;
+
                         case DateTimeKind.Local:
                             dateTime = dateTime.ToLocalTime();
                             break;
@@ -395,18 +429,22 @@ namespace Newtonsoft.Json.Bson
 
                     SetToken(JsonToken.Date, dateTime);
                     break;
+
                 case BsonType.Regex:
                     string expression = await ReadStringAsync(cancellationToken).ConfigureAwait(false);
                     string modifiers = await ReadStringAsync(cancellationToken).ConfigureAwait(false);
 
                     SetToken(JsonToken.String, @"/" + expression + @"/" + modifiers);
                     break;
+
                 case BsonType.Code:
                     SetToken(JsonToken.String, await ReadLengthStringAsync(cancellationToken).ConfigureAwait(false));
                     break;
+
                 case BsonType.Integer:
                     SetToken(JsonToken.Integer, (long)await ReadInt32Async(cancellationToken).ConfigureAwait(false));
                     break;
+
                 case BsonType.TimeStamp:
                 case BsonType.Long:
                     SetToken(JsonToken.Integer, await ReadInt64Async(cancellationToken).ConfigureAwait(false));
@@ -421,6 +459,7 @@ namespace Newtonsoft.Json.Bson
             BsonBinaryType binaryType = (BsonBinaryType)await ReadByteAsync(cancellationToken).ConfigureAwait(false);
 
 #pragma warning disable 612,618
+
             // the old binary type has the data length repeated in the data for some reason
             if (binaryType == BsonBinaryType.BinaryOld && !_jsonNet35BinaryCompatibility)
             {
@@ -438,6 +477,7 @@ namespace Newtonsoft.Json.Bson
             StringBuilder builder = null;
 
             int totalBytesRead = 0;
+
             // used in case of left over multibyte characters in the buffer
             int offset = 0;
             while (true)
@@ -477,6 +517,7 @@ namespace Newtonsoft.Json.Bson
                     if (lastFullCharStop < byteCount - 1)
                     {
                         offset = byteCount - lastFullCharStop - 1;
+
                         // copy left over multi byte characters to beginning of buffer for next iteration
                         Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                     }
@@ -563,6 +604,7 @@ namespace Newtonsoft.Json.Bson
                     if (lastFullCharStop < byteCount - 1)
                     {
                         offset = byteCount - lastFullCharStop - 1;
+
                         // copy left over multi byte characters to beginning of buffer for next iteration
                         Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                     }
@@ -574,6 +616,12 @@ namespace Newtonsoft.Json.Bson
             } while (totalBytesRead < length);
 
             return builder.ToString();
+        }
+
+        private Task<decimal> ReadDecimalAsync(CancellationToken cancellationToken)
+        {
+            MovePosition(8);
+            return _asyncReader.ReadDecimalAsync(cancellationToken);
         }
 
         private Task<double> ReadDoubleAsync(CancellationToken cancellationToken)
@@ -645,6 +693,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Integer:
                 case JsonToken.Float:
                     bool b;
@@ -662,8 +711,10 @@ namespace Newtonsoft.Json.Bson
                     SetToken(JsonToken.Boolean, b, false);
 
                     return b;
+
                 case JsonToken.String:
                     return ReadBooleanString((string)Value);
+
                 case JsonToken.Boolean:
                     return (bool)Value;
             }
@@ -735,6 +786,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Bytes:
                     if (ValueType == typeof(Guid))
                     {
@@ -744,6 +796,7 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return (byte[])Value;
+
                 case JsonToken.StartArray:
                     return await ReadArrayIntoByteArrayAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -792,6 +845,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Date:
 #if HAVE_DATE_TIME_OFFSET
                     if (Value is DateTimeOffset)
@@ -801,6 +855,7 @@ namespace Newtonsoft.Json.Bson
 #endif
 
                     return (DateTime)Value;
+
                 case JsonToken.String:
                     return ReadDateTimeString((string)Value);
             }
@@ -832,6 +887,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Date:
                     if (Value is DateTime)
                     {
@@ -839,8 +895,10 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return (DateTimeOffset)Value;
+
                 case JsonToken.String:
                     return ReadDateTimeOffsetString((string)Value);
+
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Error reading date. Unexpected token: {0}.".FormatWith(CultureInfo.InvariantCulture, t));
             }
@@ -895,6 +953,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Integer:
                 case JsonToken.Float:
                     if (!(Value is decimal))
@@ -903,6 +962,7 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return (decimal)Value;
+
                 case JsonToken.String:
                     return ReadDecimalString((string)Value);
             }
@@ -934,6 +994,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Integer:
                 case JsonToken.Float:
                     if (!(Value is double))
@@ -954,6 +1015,7 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return (double)Value;
+
                 case JsonToken.String:
                     return ReadDoubleString((string)Value);
             }
@@ -985,6 +1047,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.Integer:
                 case JsonToken.Float:
                     if (!(Value is int))
@@ -993,6 +1056,7 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return (int)Value;
+
                 case JsonToken.String:
                     string s = (string)Value;
                     return ReadInt32String(s);
@@ -1025,6 +1089,7 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Null:
                 case JsonToken.EndArray:
                     return null;
+
                 case JsonToken.String:
                     return (string)Value;
             }
@@ -1095,10 +1160,13 @@ namespace Newtonsoft.Json.Bson
                 case JsonToken.Integer:
                     buffer.Add(Convert.ToByte(Value, CultureInfo.InvariantCulture));
                     return false;
+
                 case JsonToken.EndArray:
                     return true;
+
                 case JsonToken.Comment:
                     return false;
+
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected token when reading bytes: {0}.".FormatWith(CultureInfo.InvariantCulture, TokenType));
             }

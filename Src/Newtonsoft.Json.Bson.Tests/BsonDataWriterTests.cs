@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,32 +22,41 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 using System;
 using System.Collections.Generic;
+
 #if !(NET20 || NET35 || PORTABLE) || NETSTANDARD1_3 || NETSTANDARD2_0
+
 using System.Numerics;
+
 #endif
+
 using System.Text;
 using System.Text.RegularExpressions;
+
 #if DNXCORE50
 using Xunit;
 using Test = Xunit.FactAttribute;
 using Assert = Newtonsoft.Json.Bson.Tests.XUnitAssert;
 #else
+
 using NUnit.Framework;
+
 #endif
-using Newtonsoft.Json.Bson;
+
 using System.IO;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Utilities;
 using Newtonsoft.Json.Tests.TestObjects;
 using System.Globalization;
 using Newtonsoft.Json.Tests.TestObjects.GeoCoding;
+
 #if NET20
 using Newtonsoft.Json.Utilities.LinqBridge;
 #else
+
 using System.Linq;
 using Newtonsoft.Json.Bson.Converters;
 #endif
@@ -91,6 +101,7 @@ namespace Newtonsoft.Json.Bson.Tests
         }
 
 #if !NET20
+
         [Test]
         public void WriteValues()
         {
@@ -115,8 +126,9 @@ namespace Newtonsoft.Json.Bson.Tests
             writer.WriteEnd();
 
             string bson = BytesToHex(ms.ToArray());
-            Assert.AreEqual("8C-00-00-00-12-30-00-FF-FF-FF-FF-FF-FF-FF-7F-12-31-00-FF-FF-FF-FF-FF-FF-FF-7F-10-32-00-FF-FF-FF-7F-10-33-00-FF-FF-FF-7F-10-34-00-FF-00-00-00-10-35-00-7F-00-00-00-02-36-00-02-00-00-00-61-00-01-37-00-00-00-00-00-00-00-F0-45-01-38-00-FF-FF-FF-FF-FF-FF-EF-7F-01-39-00-00-00-00-E0-FF-FF-EF-47-08-31-30-00-01-05-31-31-00-05-00-00-00-00-00-01-02-03-04-09-31-32-00-40-C5-E2-BA-E3-00-00-00-09-31-33-00-40-C5-E2-BA-E3-00-00-00-00", bson);
+            Assert.AreEqual("8C-00-00-00-12-30-00-FF-FF-FF-FF-FF-FF-FF-7F-12-31-00-FF-FF-FF-FF-FF-FF-FF-7F-10-32-00-FF-FF-FF-7F-10-33-00-FF-FF-FF-7F-10-34-00-FF-00-00-00-10-35-00-7F-00-00-00-02-36-00-02-00-00-00-61-00-13-37-00-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00-01-38-00-FF-FF-FF-FF-FF-FF-EF-7F-01-39-00-00-00-00-E0-FF-FF-EF-47-08-31-30-00-01-05-31-31-00-05-00-00-00-00-00-01-02-03-04-09-31-32-00-40-C5-E2-BA-E3-00-00-00-09-31-33-00-40-C5-E2-BA-E3-00-00-00-00", bson);
         }
+
 #endif
 
         [Test]
@@ -316,6 +328,8 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("4E-02-00-00-02-30-2D-31-2D-32-2D-33-2D-34-2D-35-2D-36-2D-37-2D-38-2D-39-2D-31-30-2D-31-31-2D-31-32-2D-31-33-2D-31-34-2D-31-35-2D-31-36-2D-31-37-2D-31-38-2D-31-39-2D-32-30-2D-32-31-2D-32-32-2D-32-33-2D-32-34-2D-32-35-2D-32-36-2D-32-37-2D-32-38-2D-32-39-2D-33-30-2D-33-31-2D-33-32-2D-33-33-2D-33-34-2D-33-35-2D-33-36-2D-33-37-2D-33-38-2D-33-39-2D-34-30-2D-34-31-2D-34-32-2D-34-33-2D-34-34-2D-34-35-2D-34-36-2D-34-37-2D-34-38-2D-34-39-2D-35-30-2D-35-31-2D-35-32-2D-35-33-2D-35-34-2D-35-35-2D-35-36-2D-35-37-2D-35-38-2D-35-39-2D-36-30-2D-36-31-2D-36-32-2D-36-33-2D-36-34-2D-36-35-2D-36-36-2D-36-37-2D-36-38-2D-36-39-2D-37-30-2D-37-31-2D-37-32-2D-37-33-2D-37-34-2D-37-35-2D-37-36-2D-37-37-2D-37-38-2D-37-39-2D-38-30-2D-38-31-2D-38-32-2D-38-33-2D-38-34-2D-38-35-2D-38-36-2D-38-37-2D-38-38-2D-38-39-2D-39-30-2D-39-31-2D-39-32-2D-39-33-2D-39-34-2D-39-35-2D-39-36-2D-39-37-2D-39-38-2D-39-39-00-22-01-00-00-30-2D-31-2D-32-2D-33-2D-34-2D-35-2D-36-2D-37-2D-38-2D-39-2D-31-30-2D-31-31-2D-31-32-2D-31-33-2D-31-34-2D-31-35-2D-31-36-2D-31-37-2D-31-38-2D-31-39-2D-32-30-2D-32-31-2D-32-32-2D-32-33-2D-32-34-2D-32-35-2D-32-36-2D-32-37-2D-32-38-2D-32-39-2D-33-30-2D-33-31-2D-33-32-2D-33-33-2D-33-34-2D-33-35-2D-33-36-2D-33-37-2D-33-38-2D-33-39-2D-34-30-2D-34-31-2D-34-32-2D-34-33-2D-34-34-2D-34-35-2D-34-36-2D-34-37-2D-34-38-2D-34-39-2D-35-30-2D-35-31-2D-35-32-2D-35-33-2D-35-34-2D-35-35-2D-35-36-2D-35-37-2D-35-38-2D-35-39-2D-36-30-2D-36-31-2D-36-32-2D-36-33-2D-36-34-2D-36-35-2D-36-36-2D-36-37-2D-36-38-2D-36-39-2D-37-30-2D-37-31-2D-37-32-2D-37-33-2D-37-34-2D-37-35-2D-37-36-2D-37-37-2D-37-38-2D-37-39-2D-38-30-2D-38-31-2D-38-32-2D-38-33-2D-38-34-2D-38-35-2D-38-36-2D-38-37-2D-38-38-2D-38-39-2D-39-30-2D-39-31-2D-39-32-2D-39-33-2D-39-34-2D-39-35-2D-39-36-2D-39-37-2D-39-38-2D-39-39-00-00", bson);
         }
 
+        private const Decimal HighPrecisionLatitude = -28.6051368556538258m;
+
         [Test]
         public void SerializeGoogleGeoCode()
         {
@@ -350,7 +364,7 @@ namespace Newtonsoft.Json.Bson.Tests
         ""Accuracy"": 8
       },
       ""Point"": {
-        ""coordinates"": [-122.083739, 37.423021, 0]
+        ""coordinates"": [-122.083739, -28.6051368556538258, 0]
       }
     }
   ]
@@ -387,7 +401,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual("1600 Amphitheatre Pkwy", placemark.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.Thoroughfare.ThoroughfareName);
             Assert.AreEqual("94043", placemark.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.PostalCode.PostalCodeNumber);
             Assert.AreEqual(-122.083739m, placemark.Point.Coordinates[0]);
-            Assert.AreEqual(37.423021m, placemark.Point.Coordinates[1]);
+            Assert.AreEqual(HighPrecisionLatitude, placemark.Point.Coordinates[1]);
             Assert.AreEqual(0m, placemark.Point.Coordinates[2]);
         }
 
@@ -475,6 +489,7 @@ namespace Newtonsoft.Json.Bson.Tests
             serializer.Serialize(writer, p);
 
             Console.WriteLine(BitConverter.ToString(ms.ToArray()));
+
             // 7C-00-00-00-02-4E-61-6D-65-00-16-00-00-00-43-61-72-6C-
             // 6F-73-27-20-53-70-69-63-79-20-57-69-65-6E-65-72-73-00-
             // 09-45-78-70-69-72-79-44-61-74-65-00-E0-51-BD-76-20-01-
@@ -490,6 +505,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Product deserializedProduct = serializer.Deserialize<Product>(reader);
 
             Console.WriteLine(deserializedProduct.Name);
+
             // Carlos' Spicy Wieners
 
             Assert.AreEqual("Carlos' Spicy Wieners", deserializedProduct.Name);
@@ -835,6 +851,7 @@ namespace Newtonsoft.Json.Bson.Tests
         }
 
 #if !(NET20 || NET35 || PORTABLE || PORTABLE40) || NETSTANDARD1_3 || NETSTANDARD2_0
+
         [Test]
         public void WriteBigInteger()
         {
@@ -903,7 +920,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             writer.WriteStartObject();
             writer.WritePropertyName("array0");
-            writer.WriteValue(new byte[] {0, 1, 2, 3, 4, 5, 6, 7});
+            writer.WriteValue(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
             writer.WritePropertyName("array1");
             writer.WriteValue(default(byte[]));
             writer.WriteEndObject();
@@ -914,7 +931,7 @@ namespace Newtonsoft.Json.Bson.Tests
             Assert.AreEqual(JsonToken.StartObject, reader.TokenType);
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.PropertyName, reader.TokenType);
-            Assert.AreEqual(new byte[] {0, 1, 2, 3, 4, 5, 6, 7}, reader.ReadAsBytes());
+            Assert.AreEqual(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }, reader.ReadAsBytes());
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(JsonToken.PropertyName, reader.TokenType);
             Assert.IsNull(reader.ReadAsBytes());
@@ -976,6 +993,7 @@ namespace Newtonsoft.Json.Bson.Tests
             // nothing is written because a BSON document needs to be completed before it can be written
             Assert.AreEqual(string.Empty, (BitConverter.ToString(ms.ToArray())));
         }
+
 #endif
     }
 }

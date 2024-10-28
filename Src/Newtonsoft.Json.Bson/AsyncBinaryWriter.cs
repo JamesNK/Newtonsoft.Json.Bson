@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,7 +22,10 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
+
+using System.Collections.Generic;
 
 #if HAVE_ASYNC
 
@@ -37,7 +41,7 @@ namespace Newtonsoft.Json.Bson
     // if adapting for other uses.
     internal class AsyncBinaryWriter : BinaryWriter
     {
-        private static readonly byte[] ByteValueBuffer = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+        private static readonly byte[] ByteValueBuffer = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
         private byte[] _buffer;
 
         public AsyncBinaryWriter(Stream stream)
@@ -83,13 +87,24 @@ namespace Newtonsoft.Json.Bson
 
         public Task WriteAsync(byte value, CancellationToken cancellationToken)
         {
-            Debug.Assert(value <= 18);
+            Debug.Assert(value <= 19);
             return OutStream.WriteAsync(ByteValueBuffer, value, 1, cancellationToken);
         }
 
         public Task WriteAsync(double value, CancellationToken cancellationToken)
         {
             return WriteAsync(BitConverter.DoubleToInt64Bits(value), cancellationToken);
+        }
+
+        public Task WriteAsync(decimal value, CancellationToken cancellationToken)
+        {
+            var bits = decimal.GetBits(value);
+            var bytes = new List<byte>();
+            foreach (var i in bits)
+            {
+                bytes.AddRange(BitConverter.GetBytes(i));
+            }
+            return OutStream.WriteAsync(bytes.ToArray(), 0, 16, cancellationToken);
         }
 
         public Task WriteAsync(byte[] buffer, CancellationToken cancellationToken)
@@ -115,12 +130,14 @@ namespace Newtonsoft.Json.Bson
         }
 
 #if HAVE_STREAM_READER_WRITER_CLOSE
+
         public override void Close()
         {
             // Don't call base.Close(). Let this writer decide
             // whether or not to close the stream.
             _writer.Close();
         }
+
 #endif
 
         protected override void Dispose(bool disposing)

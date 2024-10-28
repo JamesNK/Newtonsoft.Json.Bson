@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,24 +22,32 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+#endregion License
 
 #if !(NET20 || NET35 || NET40 || PORTABLE40)
 
 using System;
+
 #if !(NET20 || NET35 || PORTABLE) || NETSTANDARD1_3 || NETSTANDARD2_0
+
 using System.Numerics;
+
 #endif
+
 using System.Text;
 using System.Threading.Tasks;
+
 #if DNXCORE50
 using Xunit;
 using Test = Xunit.FactAttribute;
 using Assert = Newtonsoft.Json.Bson.Tests.XUnitAssert;
 #else
+
 using NUnit.Framework;
+
 #endif
-using Newtonsoft.Json.Bson;
+
 using System.IO;
 using System.Globalization;
 
@@ -104,7 +113,21 @@ namespace Newtonsoft.Json.Bson.Tests
             await writer.WriteEndAsync();
 
             string bson = BytesToHex(ms.ToArray());
-            Assert.AreEqual("8C-00-00-00-12-30-00-FF-FF-FF-FF-FF-FF-FF-7F-12-31-00-FF-FF-FF-FF-FF-FF-FF-7F-10-32-00-FF-FF-FF-7F-10-33-00-FF-FF-FF-7F-10-34-00-FF-00-00-00-10-35-00-7F-00-00-00-02-36-00-02-00-00-00-61-00-01-37-00-00-00-00-00-00-00-F0-45-01-38-00-FF-FF-FF-FF-FF-FF-EF-7F-01-39-00-00-00-00-E0-FF-FF-EF-47-08-31-30-00-01-05-31-31-00-05-00-00-00-00-00-01-02-03-04-09-31-32-00-40-C5-E2-BA-E3-00-00-00-09-31-33-00-40-C5-E2-BA-E3-00-00-00-00", bson);
+            Assert.AreEqual("8C-00-00-00-12-30-00-FF-FF-FF-FF-FF-FF-FF-7F-12-31-00-FF-FF-FF-FF-FF-FF-FF-7F-10-32-00-FF-FF-FF-7F-10-33-00-FF-FF-FF-7F-10-34-00-FF-00-00-00-10-35-00-7F-00-00-00-02-36-00-02-00-00-00-61-00-13-37-00-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00-01-38-00-FF-FF-FF-FF-FF-FF-EF-7F-01-39-00-00-00-00-E0-FF-FF-EF-47-08-31-30-00-01-05-31-31-00-05-00-00-00-00-00-01-02-03-04-09-31-32-00-40-C5-E2-BA-E3-00-00-00-09-31-33-00-40-C5-E2-BA-E3-00-00-00-00", bson);
+        }
+
+        [Test]
+        public async Task WriteDecimalAsync()
+        {
+            MemoryStream ms = new MemoryStream();
+            BsonDataWriter writer = new BsonDataWriter(ms);
+
+            await writer.WriteStartArrayAsync();
+            await writer.WriteValueAsync(-28.6051368556538258m);
+            await writer.WriteEndAsync();
+
+            string bson = BytesToHex(ms.ToArray());
+            Assert.AreEqual("10-00-00-00-13-30-00-92-A9-53-42-34-42-F8-03-00-00-00-00-00-00-10-80-00", bson);
         }
 
         [Test]
@@ -500,6 +523,7 @@ namespace Newtonsoft.Json.Bson.Tests
         }
 
 #if !PORTABLE || NETSTANDARD1_3 || NETSTANDARD2_0
+
         [Test]
         public async Task WriteBigIntegerAsync()
         {
@@ -534,6 +558,7 @@ namespace Newtonsoft.Json.Bson.Tests
 
             Assert.IsFalse(await reader.ReadAsync());
         }
+
 #endif
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright (c) 2017 James Newton-King
 //
 // Permission is hereby granted, free of charge, to any person
@@ -21,15 +22,15 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#endregion
 
+#endregion License
+
+using Newtonsoft.Json.Bson.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.IO;
-using Newtonsoft.Json.Bson.Utilities;
-using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace Newtonsoft.Json.Bson
 {
@@ -204,11 +205,13 @@ namespace Newtonsoft.Json.Bson
                     case BsonReaderState.Normal:
                         success = ReadNormal();
                         break;
+
                     case BsonReaderState.ReferenceStart:
                     case BsonReaderState.ReferenceRef:
                     case BsonReaderState.ReferenceId:
                         success = ReadReference();
                         break;
+
                     case BsonReaderState.CodeWScopeStart:
                     case BsonReaderState.CodeWScopeCode:
                     case BsonReaderState.CodeWScopeScope:
@@ -216,6 +219,7 @@ namespace Newtonsoft.Json.Bson
                     case BsonReaderState.CodeWScopeScopeEnd:
                         success = ReadCodeWScope();
                         break;
+
                     default:
                         throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state: {0}".FormatWith(CultureInfo.InvariantCulture, _bsonReaderState));
                 }
@@ -261,13 +265,16 @@ namespace Newtonsoft.Json.Bson
                     SetToken(JsonToken.PropertyName, "$code");
                     _bsonReaderState = BsonReaderState.CodeWScopeCode;
                     return true;
+
                 case BsonReaderState.CodeWScopeCode:
+
                     // total CodeWScope size - not used
                     ReadInt32();
 
                     SetToken(JsonToken.String, ReadLengthString());
                     _bsonReaderState = BsonReaderState.CodeWScopeScope;
                     return true;
+
                 case BsonReaderState.CodeWScopeScope:
                     if (CurrentState == State.PostValue)
                     {
@@ -293,10 +300,12 @@ namespace Newtonsoft.Json.Bson
                     }
 
                     return result;
+
                 case BsonReaderState.CodeWScopeScopeEnd:
                     SetToken(JsonToken.EndObject);
                     _bsonReaderState = BsonReaderState.Normal;
                     return true;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -307,47 +316,47 @@ namespace Newtonsoft.Json.Bson
             switch (CurrentState)
             {
                 case State.ObjectStart:
-                {
-                    SetToken(JsonToken.PropertyName, "$ref");
-                    _bsonReaderState = BsonReaderState.ReferenceRef;
-                    return true;
-                }
+                    {
+                        SetToken(JsonToken.PropertyName, "$ref");
+                        _bsonReaderState = BsonReaderState.ReferenceRef;
+                        return true;
+                    }
                 case State.Property:
-                {
-                    if (_bsonReaderState == BsonReaderState.ReferenceRef)
                     {
-                        SetToken(JsonToken.String, ReadLengthString());
-                        return true;
+                        if (_bsonReaderState == BsonReaderState.ReferenceRef)
+                        {
+                            SetToken(JsonToken.String, ReadLengthString());
+                            return true;
+                        }
+                        else if (_bsonReaderState == BsonReaderState.ReferenceId)
+                        {
+                            SetToken(JsonToken.Bytes, ReadBytes(12));
+                            return true;
+                        }
+                        else
+                        {
+                            throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + _bsonReaderState);
+                        }
                     }
-                    else if (_bsonReaderState == BsonReaderState.ReferenceId)
-                    {
-                        SetToken(JsonToken.Bytes, ReadBytes(12));
-                        return true;
-                    }
-                    else
-                    {
-                        throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + _bsonReaderState);
-                    }
-                }
                 case State.PostValue:
-                {
-                    if (_bsonReaderState == BsonReaderState.ReferenceRef)
                     {
-                        SetToken(JsonToken.PropertyName, "$id");
-                        _bsonReaderState = BsonReaderState.ReferenceId;
-                        return true;
+                        if (_bsonReaderState == BsonReaderState.ReferenceRef)
+                        {
+                            SetToken(JsonToken.PropertyName, "$id");
+                            _bsonReaderState = BsonReaderState.ReferenceId;
+                            return true;
+                        }
+                        else if (_bsonReaderState == BsonReaderState.ReferenceId)
+                        {
+                            SetToken(JsonToken.EndObject);
+                            _bsonReaderState = BsonReaderState.Normal;
+                            return true;
+                        }
+                        else
+                        {
+                            throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + _bsonReaderState);
+                        }
                     }
-                    else if (_bsonReaderState == BsonReaderState.ReferenceId)
-                    {
-                        SetToken(JsonToken.EndObject);
-                        _bsonReaderState = BsonReaderState.Normal;
-                        return true;
-                    }
-                    else
-                    {
-                        throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + _bsonReaderState);
-                    }
-                }
                 default:
                     throw ExceptionUtils.CreateJsonReaderException(this, "Unexpected state when reading BSON reference: " + CurrentState);
             }
@@ -358,24 +367,25 @@ namespace Newtonsoft.Json.Bson
             switch (CurrentState)
             {
                 case State.Start:
-                {
-                    JsonToken token = (!_readRootValueAsArray) ? JsonToken.StartObject : JsonToken.StartArray;
-                    BsonType type = (!_readRootValueAsArray) ? BsonType.Object : BsonType.Array;
+                    {
+                        JsonToken token = (!_readRootValueAsArray) ? JsonToken.StartObject : JsonToken.StartArray;
+                        BsonType type = (!_readRootValueAsArray) ? BsonType.Object : BsonType.Array;
 
-                    SetToken(token);
-                    ContainerContext newContext = new ContainerContext(type);
-                    PushContext(newContext);
-                    newContext.Length = ReadInt32();
-                    return true;
-                }
+                        SetToken(token);
+                        ContainerContext newContext = new ContainerContext(type);
+                        PushContext(newContext);
+                        newContext.Length = ReadInt32();
+                        return true;
+                    }
                 case State.Complete:
                 case State.Closed:
                     return false;
+
                 case State.Property:
-                {
-                    ReadType(_currentElementType);
-                    return true;
-                }
+                    {
+                        ReadType(_currentElementType);
+                        return true;
+                    }
                 case State.ObjectStart:
                 case State.ArrayStart:
                 case State.PostValue:
@@ -429,12 +439,16 @@ namespace Newtonsoft.Json.Bson
                     }
                 case State.ConstructorStart:
                     break;
+
                 case State.Constructor:
                     break;
+
                 case State.Error:
                     break;
+
                 case State.Finished:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -483,28 +497,34 @@ namespace Newtonsoft.Json.Bson
                         SetToken(JsonToken.Float, d);
                     }
                     break;
+
+                case BsonType.PrecisionNumber:
+                    SetToken(JsonToken.Float, Convert.ToDecimal(ReadDecimal(), CultureInfo.InvariantCulture));
+                    break;
+
                 case BsonType.String:
                 case BsonType.Symbol:
                     SetToken(JsonToken.String, ReadLengthString());
                     break;
+
                 case BsonType.Object:
-                {
-                    SetToken(JsonToken.StartObject);
+                    {
+                        SetToken(JsonToken.StartObject);
 
-                    ContainerContext newContext = new ContainerContext(BsonType.Object);
-                    PushContext(newContext);
-                    newContext.Length = ReadInt32();
-                    break;
-                }
+                        ContainerContext newContext = new ContainerContext(BsonType.Object);
+                        PushContext(newContext);
+                        newContext.Length = ReadInt32();
+                        break;
+                    }
                 case BsonType.Array:
-                {
-                    SetToken(JsonToken.StartArray);
+                    {
+                        SetToken(JsonToken.StartArray);
 
-                    ContainerContext newContext = new ContainerContext(BsonType.Array);
-                    PushContext(newContext);
-                    newContext.Length = ReadInt32();
-                    break;
-                }
+                        ContainerContext newContext = new ContainerContext(BsonType.Array);
+                        PushContext(newContext);
+                        newContext.Length = ReadInt32();
+                        break;
+                    }
                 case BsonType.Binary:
                     BsonBinaryType binaryType;
                     byte[] data = ReadBinary(out binaryType);
@@ -515,17 +535,21 @@ namespace Newtonsoft.Json.Bson
 
                     SetToken(JsonToken.Bytes, value);
                     break;
+
                 case BsonType.Undefined:
                     SetToken(JsonToken.Undefined);
                     break;
+
                 case BsonType.Oid:
                     byte[] oid = ReadBytes(12);
                     SetToken(JsonToken.Bytes, oid);
                     break;
+
                 case BsonType.Boolean:
                     bool b = Convert.ToBoolean(ReadByte());
                     SetToken(JsonToken.Boolean, b);
                     break;
+
                 case BsonType.Date:
                     long ticks = ReadInt64();
                     DateTime utcDateTime = DateTimeUtils.ConvertJavaScriptTicksToDateTime(ticks);
@@ -536,9 +560,11 @@ namespace Newtonsoft.Json.Bson
                         case DateTimeKind.Unspecified:
                             dateTime = DateTime.SpecifyKind(utcDateTime, DateTimeKind.Unspecified);
                             break;
+
                         case DateTimeKind.Local:
                             dateTime = utcDateTime.ToLocalTime();
                             break;
+
                         default:
                             dateTime = utcDateTime;
                             break;
@@ -546,9 +572,11 @@ namespace Newtonsoft.Json.Bson
 
                     SetToken(JsonToken.Date, dateTime);
                     break;
+
                 case BsonType.Null:
                     SetToken(JsonToken.Null);
                     break;
+
                 case BsonType.Regex:
                     string expression = ReadString();
                     string modifiers = ReadString();
@@ -556,24 +584,30 @@ namespace Newtonsoft.Json.Bson
                     string regex = @"/" + expression + @"/" + modifiers;
                     SetToken(JsonToken.String, regex);
                     break;
+
                 case BsonType.Reference:
                     SetToken(JsonToken.StartObject);
                     _bsonReaderState = BsonReaderState.ReferenceStart;
                     break;
+
                 case BsonType.Code:
                     SetToken(JsonToken.String, ReadLengthString());
                     break;
+
                 case BsonType.CodeWScope:
                     SetToken(JsonToken.StartObject);
                     _bsonReaderState = BsonReaderState.CodeWScopeStart;
                     break;
+
                 case BsonType.Integer:
                     SetToken(JsonToken.Integer, (long)ReadInt32());
                     break;
+
                 case BsonType.TimeStamp:
                 case BsonType.Long:
                     SetToken(JsonToken.Integer, ReadInt64());
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), "Unexpected BsonType value: " + type);
             }
@@ -586,6 +620,7 @@ namespace Newtonsoft.Json.Bson
             binaryType = (BsonBinaryType)ReadByte();
 
 #pragma warning disable 612,618
+
             // the old binary type has the data length repeated in the data for some reason
             if (binaryType == BsonBinaryType.BinaryOld && !_jsonNet35BinaryCompatibility)
             {
@@ -603,6 +638,7 @@ namespace Newtonsoft.Json.Bson
             StringBuilder builder = null;
 
             int totalBytesRead = 0;
+
             // used in case of left over multibyte characters in the buffer
             int offset = 0;
             while (true)
@@ -642,6 +678,7 @@ namespace Newtonsoft.Json.Bson
                     if (lastFullCharStop < byteCount - 1)
                     {
                         offset = byteCount - lastFullCharStop - 1;
+
                         // copy left over multi byte characters to beginning of buffer for next iteration
                         Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                     }
@@ -728,6 +765,7 @@ namespace Newtonsoft.Json.Bson
                     if (lastFullCharStop < byteCount - 1)
                     {
                         offset = byteCount - lastFullCharStop - 1;
+
                         // copy left over multi byte characters to beginning of buffer for next iteration
                         Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                     }
@@ -812,6 +850,12 @@ namespace Newtonsoft.Json.Bson
         {
             MovePosition(8);
             return _reader.ReadDouble();
+        }
+
+        private decimal ReadDecimal()
+        {
+            MovePosition(8);
+            return _reader.ReadDecimal();
         }
 
         private int ReadInt32()
