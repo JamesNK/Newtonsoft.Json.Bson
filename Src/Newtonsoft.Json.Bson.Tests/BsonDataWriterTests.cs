@@ -49,8 +49,8 @@ using Newtonsoft.Json.Utilities.LinqBridge;
 #else
 using System.Linq;
 using Newtonsoft.Json.Bson.Converters;
-
 #endif
+using System.Threading.Tasks;
 
 namespace Newtonsoft.Json.Bson.Tests
 {
@@ -802,6 +802,36 @@ namespace Newtonsoft.Json.Bson.Tests
             GuidTestClass c2 = serializer.Deserialize<GuidTestClass>(reader);
 
             Assert.AreEqual(c.AGuid, c2.AGuid.ToString());
+        }
+
+        [Test]
+        public void WritePropertyNameWithNullByte()
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict["key\0sdf"] = "hello";
+
+            MemoryStream ms = new MemoryStream();
+            JsonSerializer serializer = new JsonSerializer();
+
+            BsonDataWriter writer = new BsonDataWriter(ms);
+
+            var ex = ExceptionAssert.Throws<JsonWriterException>(() => serializer.Serialize(writer, dict));
+            Assert.AreEqual("Property name must not contain a null byte. Path ''.", ex.Message);
+        }
+
+        [Test]
+        public async Task WritePropertyNameWithNullByteAsync()
+        {
+            JObject o = new JObject();
+            o["key\0sdf"] = "hello";
+
+            MemoryStream ms = new MemoryStream();
+            JsonSerializer serializer = new JsonSerializer();
+
+            BsonDataWriter writer = new BsonDataWriter(ms);
+
+            var ex = await ExceptionAssert.ThrowsAsync<JsonWriterException>(async () => await o.WriteToAsync(writer));
+            Assert.AreEqual("Property name must not contain a null byte. Path ''.", ex.Message);
         }
 
 #if !(NET20 || NET35 || PORTABLE || PORTABLE40) || NETSTANDARD1_3 || NETSTANDARD2_0

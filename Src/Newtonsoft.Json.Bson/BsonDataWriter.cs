@@ -186,6 +186,11 @@ namespace Newtonsoft.Json.Bson
         /// <param name="name">The name of the property.</param>
         public override void WritePropertyName(string name)
         {
+            if (name != null && name.Contains("\0"))
+            {
+                throw ExceptionUtils.CreateJsonWriterException(this, "Property name must not contain a null byte.", null);
+            }
+
             base.WritePropertyName(name);
 
             _propertyName = name;
