@@ -281,7 +281,15 @@ namespace Newtonsoft.Json.Bson
                 case State.ArrayStart:
                 case State.PostValue:
                     ContainerContext context = _currentContext;
-                    return context == null ? AsyncUtils.False : ReadNormalPostValueAsync(context, cancellationToken);
+                    if (context == null)
+                    {
+                        if (SupportMultipleContent)
+                        {
+                            goto case State.Start;
+                        }
+                        return AsyncUtils.False;
+                    }
+                    return ReadNormalPostValueAsync(context, cancellationToken);
                 case State.Complete:
                 case State.Closed:
                 case State.ConstructorStart:
