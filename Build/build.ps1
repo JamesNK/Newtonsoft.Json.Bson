@@ -13,8 +13,9 @@
   $workingName = if ($workingName) {$workingName} else {"Working"}
   $assemblyVersion = if ($assemblyVersion) {$assemblyVersion} else {$majorVersion + '.0.0'}
   $netCliChannel = "STS"
-  $netCliVersion = "8.0.300"
+  $netCliVersion = "9.0.300"
   $nugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+  $ensureNetCliSdk = $true
   
   $baseDir  = resolve-path ..
   $buildDir = "$baseDir\Build"
@@ -63,7 +64,10 @@ task Build -depends Clean {
 
   mkdir "$buildDir\Temp" -Force
 
-  EnsureDotNetCli
+  if ($ensureNetCliSdk)
+  {
+    EnsureDotNetCli
+  }
   EnsureNuGetExists
   EnsureNuGetPackage "vswhere" $vswherePath $vswhereVersion
   EnsureNuGetPackage "NUnit.ConsoleRunner" $nunitConsolePath $nunitConsoleVersion
@@ -118,7 +122,7 @@ task Test -depends Build {
 
 function NetCliBuild()
 {
-  $projectPath = "$sourceDir\Newtonsoft.Json.Bson.sln"
+  $projectPath = "$sourceDir\Newtonsoft.Json.Bson.slnx"
   $libraryFrameworks = ($script:enabledBuilds | Select-Object @{Name="Framework";Expression={$_.Framework}} | select -expand Framework) -join ";"
   $testFrameworks = ($script:enabledBuilds | Select-Object @{Name="Resolved";Expression={if ($_.TestFramework -ne $null) { $_.TestFramework } else { $_.Framework }}} | select -expand Resolved) -join ";"
 
