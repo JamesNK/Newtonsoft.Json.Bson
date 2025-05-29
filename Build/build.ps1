@@ -15,6 +15,7 @@
   $netCliChannel = "STS"
   $netCliVersion = "9.0.300"
   $nugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+  $ensureNetCliSdk = $true
   
   $baseDir  = resolve-path ..
   $buildDir = "$baseDir\Build"
@@ -63,7 +64,10 @@ task Build -depends Clean {
 
   mkdir "$buildDir\Temp" -Force
 
-  EnsureDotNetCli
+  if ($ensureNetCliSdk)
+  {
+    EnsureDotNetCli
+  }
   EnsureNuGetExists
   EnsureNuGetPackage "vswhere" $vswherePath $vswhereVersion
   EnsureNuGetPackage "NUnit.ConsoleRunner" $nunitConsolePath $nunitConsoleVersion
